@@ -1050,6 +1050,15 @@
     .shortcuts { display: none; }
     .landing-hero h1 { font-size: 24px; }
     .modal { padding: 22px; }
+
+    /* Mobile: whole page scrolls naturally (fixes iOS Safari scroll dead zones
+       and lets the URL bar collapse on scroll). Session modal stays fixed. */
+    html, body { overflow: visible; }
+    body { min-height: 100vh; min-height: 100dvh; }
+    main {
+      overflow: visible;
+      flex: 1 0 auto;
+    }
   }
   @media (max-width: 480px) {
     /* on very narrow screens, further trim toolbar-right */
