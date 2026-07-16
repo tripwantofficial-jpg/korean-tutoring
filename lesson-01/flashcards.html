@@ -79,21 +79,37 @@
     flex-shrink: 0;
   }
   .brand {
-    display: flex;
-    align-items: baseline;
+    display: inline-flex;
+    align-items: center;
     gap: 10px;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+    transition: background 0.15s, color 0.15s;
   }
-  .brand-mark {
-    font-size: 20px;
-    line-height: 1;
-    color: var(--accent);
-    font-weight: 500;
-  }
+  .brand:hover { background: var(--card-bg); }
+  .brand:hover .brand-title { color: var(--accent); }
   .brand-title {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    transition: color 0.15s;
+  }
+  .tagline {
+    font-size: 13px;
     color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+    padding: 0 16px;
   }
 
   .segmented {
@@ -970,7 +986,14 @@
       gap: 8px;
       padding: 8px 12px;
     }
-    .brand-title { display: none; }
+    .brand-title { font-size: 13px; }
+    .tagline {
+      font-size: 12px;
+      padding: 4px 0 0;
+      flex-basis: 100%;
+      order: 3;
+      text-align: center;
+    }
     .segmented button { padding: 5px 10px; font-size: 12px; }
     .stats { gap: 10px; }
     .stat-value { font-size: 13px; }
@@ -1071,15 +1094,10 @@
 <body>
 
 <header>
-  <div class="brand">
-    <span class="brand-mark korean">가</span>
-    <span class="brand-title" data-i18n="brand_title">자모 플래시카드 · Week 1</span>
-  </div>
-  <div class="segmented" role="tablist" aria-label="Mode">
-    <button class="active" data-mode="diagnostic" role="tab" data-i18n="mode_diagnostic">진단</button>
-    <button data-mode="study" role="tab" data-i18n="mode_study">연습</button>
-    <button data-mode="reverse" role="tab" data-i18n="mode_reverse">역방향</button>
-  </div>
+  <button type="button" class="brand" id="brand-home" aria-label="Home">
+    <span class="brand-title" data-i18n="brand_title">Jin's 4주 부트캠프</span>
+  </button>
+  <div class="tagline" data-i18n="tagline">4주 뒤엔 한국어를 읽고 씁니다</div>
   <div class="stats" id="stats" aria-live="polite">
     <div class="stat"><span class="stat-label" data-i18n="stat_progress">진행</span><span class="stat-value mono" id="progress">0 / 0</span></div>
     <div class="stat"><span class="stat-label" data-i18n="stat_time">시간</span><span class="stat-value mono" id="timer">0:00</span></div>
@@ -1298,7 +1316,8 @@
   const LOCALES = {
     ko: {
       // --- chrome (static HTML) ---
-      brand_title: '자모 플래시카드 · Week 1',
+      brand_title: "Jin's 4주 부트캠프",
+      tagline: '4주 뒤엔 한국어를 읽고 씁니다',
       mode_diagnostic: '진단',
       mode_study: '연습',
       mode_reverse: '역방향',
@@ -1442,7 +1461,8 @@
 
     en: {
       // --- chrome (static HTML) ---
-      brand_title: 'Hangul Flashcards · Week 1',
+      brand_title: "Jin's 4-Week Bootcamp",
+      tagline: "In 4 weeks, you'll read & write Korean",
       mode_diagnostic: 'Diagnostic',
       mode_study: 'Study',
       mode_reverse: 'Reverse',
@@ -1890,8 +1910,6 @@
     document.querySelectorAll('[data-start-mode]').forEach(btn => {
       btn.onclick = () => {
         state.mode = btn.dataset.startMode;
-        document.querySelectorAll('.segmented button').forEach(b =>
-          b.classList.toggle('active', b.dataset.mode === state.mode));
         startSession();
       };
     });
@@ -2264,14 +2282,8 @@
   // ================================================================
   // Wiring
   // ================================================================
-  document.querySelectorAll('.segmented button').forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll('.segmented button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.mode = btn.dataset.mode;
-      newSession();
-    };
-  });
+  // Brand acts as Home link
+  document.getElementById('brand-home').onclick = () => newSession();
   document.querySelectorAll('.set-chip').forEach(btn => {
     btn.onclick = () => {
       state.set = btn.dataset.set;
