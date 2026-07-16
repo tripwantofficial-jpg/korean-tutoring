@@ -755,6 +755,45 @@
     color: var(--muted);
     text-transform: uppercase;
   }
+  .card-listen {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    width: 42px;
+    height: 42px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.1s;
+    z-index: 3;
+  }
+  .card-listen:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--bg);
+  }
+  .card-listen:active { transform: scale(0.94); }
+  .card-listen.speaking {
+    color: var(--accent);
+    border-color: var(--accent);
+    animation: listen-pulse 1.2s ease-in-out infinite;
+  }
+  .card-listen svg { width: 20px; height: 20px; }
+  @keyframes listen-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-listen.speaking { animation: none; }
+  }
   .session-card .card-reveal {
     display: flex;
     flex-direction: column;
@@ -1227,6 +1266,7 @@
     <span class="shortcut"><kbd>F</kbd> <span data-i18n="sc_f">뒤집기</span></span>
     <span class="shortcut"><kbd>←</kbd> <span data-i18n="sc_left">틀림</span></span>
     <span class="shortcut"><kbd>→</kbd> <span data-i18n="sc_right">맞음</span></span>
+    <span class="shortcut"><kbd>L</kbd> <span data-i18n="sc_l">발음</span></span>
     <span class="shortcut"><kbd>R</kbd> <span data-i18n="sc_r">다시</span></span>
   </div>
   <div data-i18n="footer_meta">4주 부트캠프 · Week 1 · 자모 40</div>
@@ -1432,6 +1472,8 @@
       sc_left: '틀림',
       sc_right: '맞음',
       sc_r: '다시',
+      sc_l: '발음',
+      btn_listen_aria: '발음 듣기',
       footer_meta: '4주 부트캠프 · Week 1 · 자모 40',
 
       // --- deck chips (per set) ---
@@ -1548,6 +1590,7 @@
       help_sc_space: '다음 · 시작',
       help_sc_f: '카드 뒤집기 (답 보기)',
       help_sc_arrows: '틀림 · 맞음',
+      help_sc_l: '발음 듣기 (🔊 버튼)',
       help_sc_r: '처음부터 다시',
 
       // --- dialogs ---
@@ -1577,6 +1620,8 @@
       sc_left: 'wrong',
       sc_right: 'right',
       sc_r: 'restart',
+      sc_l: 'listen',
+      btn_listen_aria: 'Listen to pronunciation',
       footer_meta: '4-Week Bootcamp · Week 1 · Letters 40',
 
       // --- deck chips ---
@@ -1692,6 +1737,7 @@
       help_sc_space: 'next · start',
       help_sc_f: 'flip card (show answer)',
       help_sc_arrows: 'wrong · right',
+      help_sc_l: 'listen to pronunciation (🔊 button)',
       help_sc_r: 'restart from scratch',
 
       // --- dialogs ---
@@ -2085,6 +2131,7 @@
             <li><span class="kbd-inline">Space</span> ${t('help_sc_space')}</li>
             <li><span class="kbd-inline">F</span> ${t('help_sc_f')}</li>
             <li><span class="kbd-inline">←</span> · <span class="kbd-inline">→</span> ${t('help_sc_arrows')}</li>
+            <li><span class="kbd-inline">L</span> ${t('help_sc_l')}</li>
             <li><span class="kbd-inline">R</span> ${t('help_sc_r')}</li>
           </ul>
         </div>
@@ -2097,6 +2144,38 @@
       if (e.target.id === 'modal-backdrop') close();
     });
   }
+
+  // ================================================================
+  // Speech synthesis (browser Web Speech API)
+  // ================================================================
+  const SPEECH_OK = 'speechSynthesis' in window;
+  function speak(text) {
+    if (!SPEECH_OK || !text) return;
+    try {
+      window.speechSynthesis.cancel();  // stop anything already speaking
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ko-KR';
+      u.rate = 0.85;   // slightly slower for learners
+      u.pitch = 1.0;
+      const btn = document.getElementById('btn-listen');
+      if (btn) btn.classList.add('speaking');
+      const done = () => btn?.classList.remove('speaking');
+      u.onend = done;
+      u.onerror = done;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* silently ignore */ }
+  }
+  function speakCurrentCard() {
+    if (state.index < 0 || state.index >= state.queue.length) return;
+    const info = cardInfo(state.queue[state.index]);
+    if (!info) return;
+    // Words: speak the Korean word directly.
+    // Jamo: speak the letter's Korean name (기역, 니은, ...) —
+    // Koreans learn letters by name, and the name contains the sound.
+    const text = info.type === 'word' ? info.char : info.name;
+    speak(text);
+  }
+  const LISTEN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
 
   // Font size for Korean word display — scales down as syllable count grows.
   function koreanFontSize(text) {
@@ -2194,6 +2273,7 @@
           <div class="session-card-slot">
             <div class="session-card" id="card" role="button" tabindex="0" aria-label="Flashcard ${state.index + 1} of ${total}">
               <span class="card-index">${state.index + 1} / ${total}</span>
+              ${SPEECH_OK ? `<button type="button" class="card-listen" id="btn-listen" aria-label="${t('btn_listen_aria')}" title="${t('btn_listen_aria')} (L)">${LISTEN_SVG}</button>` : ''}
               ${faceContent}
               <div class="card-reveal ${showReveal ? '' : 'hidden'}">
                 ${revealContent}
@@ -2219,6 +2299,13 @@
     bindOr('btn-right', () => nextCard('right'));
     bindOr('btn-flip', flip);
     bindOr('btn-next', () => nextCard());
+    const listenBtn = document.getElementById('btn-listen');
+    if (listenBtn) {
+      listenBtn.onclick = (e) => {
+        e.stopPropagation();  // don't flip the card
+        speakCurrentCard();
+      };
+    }
     updateTimer();
   }
 
@@ -2467,6 +2554,9 @@
     } else if (e.key === 'r' || e.key === 'R') {
       e.preventDefault();
       newSession();
+    } else if (e.key === 'l' || e.key === 'L') {
+      e.preventDefault();
+      if (state.index >= 0 && state.index < state.queue.length) speakCurrentCard();
     }
   });
 
