@@ -798,26 +798,98 @@
     .mode-card { min-height: 0; }
   }
   @media (max-width: 720px) {
+    /* header — compact */
     header {
       flex-wrap: wrap;
-      gap: 12px;
-      padding: 12px 16px;
+      gap: 8px;
+      padding: 8px 12px;
     }
-    .stats { gap: 14px; }
-    .stat-value { font-size: 14px; }
-    .toolbar { padding: 10px 16px; }
-    .toolbar-right { width: 100%; justify-content: flex-end; }
-    main { padding: 12px; }
-    .btn { min-width: 92px; padding: 12px 16px; font-size: 13px; }
+    .brand-title { display: none; }
+    .segmented button { padding: 5px 10px; font-size: 12px; }
+    .stats { gap: 10px; }
+    .stat-value { font-size: 13px; }
+    .stat-label { font-size: 9px; }
+
+    /* toolbar — 2 rows on mobile: chips scroll horizontally on top, icon buttons below */
+    .toolbar {
+      padding: 8px 12px;
+      gap: 8px;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .deck-filter {
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-wrap: nowrap;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      min-width: 0;
+      width: 100%;
+    }
+    .deck-filter::-webkit-scrollbar { display: none; }
+    .deck-filter label { flex-shrink: 0; }
+    .deck-chips { flex-wrap: nowrap; flex-shrink: 0; }
+    .chip { white-space: nowrap; }
+    .toolbar-right {
+      flex-shrink: 0;
+      gap: 6px;
+      width: 100%;
+      justify-content: flex-end;
+    }
+    .toolbar-right .icon-btn {
+      padding: 5px 10px;
+      font-size: 11px;
+    }
+
+    /* main — card fills available space, actions always visible */
+    main {
+      padding: 8px 12px 12px;
+      align-items: stretch;
+      justify-content: flex-start;
+    }
+    .card-wrap {
+      height: 100%;
+      width: 100%;
+      max-width: 100%;
+      justify-content: flex-start;
+      gap: 12px;
+    }
+    .card {
+      aspect-ratio: unset;
+      max-height: none;
+      flex: 1 1 0;
+      min-height: 160px;
+      width: 100%;
+      padding: 20px;
+    }
+    .card-face { font-size: clamp(80px, 26vw, 200px); }
+    .card-face.answer { font-size: clamp(44px, 10vw, 100px); }
+
+    .actions {
+      flex: 0 0 auto;
+      width: 100%;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn {
+      min-width: 0;
+      flex: 1;
+      max-width: 140px;
+      padding: 12px 6px;
+      font-size: 13px;
+    }
     .btn .kbd { display: none; }
-    footer { font-size: 10px; padding: 8px 16px; }
+
+    footer { font-size: 10px; padding: 8px 12px; }
     .shortcuts { display: none; }
     .landing-hero h1 { font-size: 24px; }
     .modal { padding: 22px; }
   }
   @media (max-width: 480px) {
-    .brand-title { display: none; }
-    .segmented button { padding: 5px 10px; font-size: 12px; }
+    /* on very narrow screens, further trim toolbar-right */
+    .toolbar-right .icon-btn { padding: 5px 6px; font-size: 10px; }
+    .stat-label { display: none; }
+    .stats { gap: 8px; }
   }
 </style>
 </head>
