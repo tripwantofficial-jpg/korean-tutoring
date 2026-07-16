@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 1 첫 수업 가이드</title>
+<style>
+  :root {
+    --bg: #F6F1E7;
+    --card: #FFFCF6;
+    --ink: #1F1B16;
+    --muted: #8B7F6D;
+    --rule: #E2D9C7;
+    --accent: #2E4372;
+    --highlight: #A83E2A;
+    --ok: #3F6B3A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17130E; --card: #211C16; --ink: #F1EADB;
+      --muted: #8D8474; --rule: #2E2823; --accent: #8FA5D6;
+      --highlight: #D97960; --ok: #7BAF71;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    padding: 20px 18px 60px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 8px 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 24px;
+  }
+  h2 {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 10px;
+    font-weight: 600;
+  }
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+    letter-spacing: -0.005em;
+  }
+  p { margin: 0 0 10px; }
+  ul, ol { padding-left: 22px; margin: 6px 0 12px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .goal {
+    background: var(--card);
+    border: 1px solid var(--accent);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+  .goal .label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .goal p { font-size: 16px; margin: 0; font-weight: 500; }
+
+  .phase {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .phase[open] { border-color: var(--accent); }
+  .phase summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .phase summary::-webkit-details-marker { display: none; }
+  .phase summary::after {
+    content: '›';
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 24px;
+    transition: transform 0.15s;
+  }
+  .phase[open] summary::after { transform: rotate(90deg); }
+  .phase .time {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-size: 14px;
+    background: var(--bg);
+    padding: 3px 9px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .phase .content {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+  }
+
+  .callout {
+    background: var(--bg);
+    border-left: 3px solid var(--highlight);
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 15px;
+    border-radius: 4px;
+  }
+  .callout.ok { border-left-color: var(--ok); }
+  .callout .lbl {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--highlight);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .callout.ok .lbl { color: var(--ok); }
+
+  .quote {
+    font-style: italic;
+    color: var(--muted);
+    border-left: 3px solid var(--rule);
+    padding: 4px 12px;
+    margin: 8px 0;
+    font-size: 15px;
+  }
+
+  a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  a:hover { text-decoration: underline; }
+
+  .btn-link {
+    display: block;
+    background: var(--accent);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 10px 0;
+    text-decoration: none;
+  }
+  .btn-link.ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--rule);
+  }
+
+  .record-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .record-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+  }
+  .record-row .k { font-weight: 500; }
+  .record-row .v { color: var(--muted); font-family: ui-monospace, monospace; }
+
+  .tick { color: var(--ok); font-weight: 700; margin-right: 4px; }
+  .cross { color: var(--highlight); font-weight: 700; margin-right: 4px; }
+
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; }
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+</style>
+</head>
+<body>
+
+<h1>Week 1 · 첫 수업</h1>
+<p class="subtitle">120분 · 자모 자동화 시작 · 진단 기준선 확보</p>
+
+<div class="goal">
+  <div class="label">오늘의 목표</div>
+  <p>학생의 자모 인식 속도를 <strong>숫자로 측정</strong>해서 4주 뒤 비교 기준을 만든다. 개념 설명은 최소, 반복 드릴 위주.</p>
+</div>
+
+<h2>🎒 준비물</h2>
+<div class="card">
+  <ul>
+    <li><strong>플래시카드 앱 (제일 중요)</strong> — 아래 링크로 태블릿·노트북에서 열어두기</li>
+    <li>스톱워치 앱 (폰 기본)</li>
+    <li>학생용 노트 + 연필</li>
+    <li>화이트보드 or 큰 종이</li>
+    <li>진단 기록지 (사진 찍거나 노트에)</li>
+  </ul>
+  <a href="https://tripwantofficial-jpg.github.io/korean-tutoring/lesson-01/flashcards.html" class="btn-link">🎴 플래시카드 앱 열기</a>
+</div>
+
+<h2>📚 오늘의 흐름 (120분)</h2>
+
+<details class="phase" open>
+  <summary><span class="time">0–10분</span> Warm-up + 4주 약속</summary>
+  <div class="content">
+    <p><strong>말할 것</strong>: "오늘부터 4주 동안 우리가 할 일은 하나예요. <strong>한국어를 읽고 쓰는 걸 자동화하는 것.</strong> 4주 뒤에는 눈에 보이는 순간 소리가 나오고, 귀에 들리는 순간 손이 씁니다. 그러려면 매일 15분씩 반복하는 수밖에 없어요."</p>
+    <p><strong>학생에게 물을 것</strong> (5분):</p>
+    <ul>
+      <li>지금 가장 어려운 게 뭐예요? — 자음? 모음? 받침? 복모음?</li>
+      <li>혼자 공부할 때 뭘 써서 하셨어요?</li>
+      <li>일주일에 몇 번, 언제 시간 나요? → 매일 15분 시간대 <strong>같이 정하기</strong></li>
+    </ul>
+    <div class="callout"><span class="lbl">기록</span>답변을 노트에 적어두기 → 이후 4주 참고</div>
+  </div>
+</details>
+
+<details class="phase" open>
+  <summary><span class="time">10–25분</span> 진단 · 자모 40장 시간 측정</summary>
+  <div class="content">
+    <p>플래시카드 앱 → <strong>학생 진단</strong> 모드 → 시작.</p>
+    <ol>
+      <li>학생 앞에 화면 놓고 카드 넘김 (Space 또는 → 로 다음)</li>
+      <li>학생이 자모 소리내어 읽음</li>
+      <li>맞으면 <strong>✓ 맞음</strong>, 틀리면 <strong>✗ 틀림</strong> 클릭</li>
+      <li>40장 끝나면 자동으로 결과 화면 → <strong>총 시간·정확도·틀린 것</strong> 나옴</li>
+    </ol>
+    <div class="callout ok"><span class="lbl">이 숫자 반드시 기록</span>총 시간(초) · 카드당 시간 · 정확도 · 틀린 자모 목록 — 4주 뒤 비교 기준선</div>
+    <p><strong>학생에게 말할 것</strong>: <span class="quote">"이 숫자가 오늘의 출발점이에요. 4주 뒤에 다시 재볼 거예요. 못하는 게 아니라 아직 안 익숙한 거예요."</span></p>
+  </div>
+</details>
+
+<details class="phase">
+  <summary><span class="time">25–45분</span> 스피드 드릴 3라운드</summary>
+  <div class="content">
+    <p>진단 결과 화면에서 <strong>"틀린 것만 재훈련"</strong> 버튼 → 방금 틀린 자모만 반복.</p>
+    <p><strong>Round 1</strong> (7분): 시각→소리. 카드 보여주면 학생이 즉시 발음. 목표 1초.</p>
+    <p><strong>Round 2</strong> (7분): 소리→시각. 강사가 발음하면 학생이 노트에 자모 씀.</p>
+    <p><strong>Round 3</strong> (6분): 약점 집중. 앱의 <strong>약점</strong> 덱으로 이번 세션 틀린 것만 반복.</p>
+    <div class="callout"><span class="lbl">주의</span>틀렸을 때 <strong>이유 설명 X</strong>. 정답만 알려주고 다음. 반복으로 감이 붙게.</div>
+  </div>
+</details>
+
+<details class="phase">
+  <summary><span class="time">45–65분</span> 자·모 결합 원리 재정리</summary>
+  <div class="content">
+    <p>화이트보드에 딱 <strong>3가지</strong>만:</p>
+    <ol>
+      <li><strong>세로 모음</strong> (ㅏ ㅑ ㅓ ㅕ ㅣ ㅐ ㅔ) → 자음은 <strong>왼쪽</strong>. 예: 가·니·페</li>
+      <li><strong>가로 모음</strong> (ㅗ ㅛ ㅜ ㅠ ㅡ) → 자음은 <strong>위</strong>. 예: 고·두·프</li>
+      <li><strong>복모음</strong> (ㅘ ㅝ ㅚ ㅟ ㅢ) → 자음은 <strong>왼쪽 위</strong>. 예: 봐·뭐·외·의</li>
+    </ol>
+    <p><strong>즉석 드릴 (10분)</strong>: 강사가 "ㄱ+ㅏ" "ㅁ+ㅘ" "ㅅ+ㅝ" 형태로 20개 부름 → 학생이 노트에 조립해서 씀.</p>
+  </div>
+</details>
+
+<details class="phase">
+  <summary><span class="time">65–75분</span> 휴식</summary>
+  <div class="content">
+    <p>물, 화장실. 강사는 다음 파트 준비.</p>
+  </div>
+</details>
+
+<details class="phase">
+  <summary><span class="time">75–95분</span> 라이브 받아쓰기 30개</summary>
+  <div class="content">
+    <p>강사가 음절 30개를 5개씩 6묶음으로 불러줌. 학생은 즉시 씀. 5개마다 함께 확인.</p>
+    <p><strong>묶음별 초점</strong>:</p>
+    <ul>
+      <li>1묶음: 기본 세로모음 (가·노·두·리·미)</li>
+      <li>2묶음: 기본 가로모음 (소·이·조·처·카)</li>
+      <li>3묶음: 격음 (파·하·코·툐·커)</li>
+      <li>4묶음: 경음 (꼬·뛰·쁘·씨·짜)</li>
+      <li>5묶음: y-복모음 (예·얘·뇨·뮤·뾰)</li>
+      <li>6묶음: w-복모음 (왜·웨·외·위·의)</li>
+    </ul>
+    <div class="callout"><span class="lbl">자주 틀리는 것</span>ㅓ vs ㅗ · ㅐ vs ㅔ (거의 같음, 알려주고 넘어감) · ㅚ/ㅙ/ㅞ (셋 다 [we] 발음, 다음 주에 다룸)</div>
+    <p><strong>말할 것</strong>: <span class="quote">"지금 틀린 건 정상이에요. 오늘의 관찰이 다음 주 연습의 재료가 돼요."</span></p>
+  </div>
+</details>
+
+<details class="phase">
+  <summary><span class="time">95–115분</span> 읽기 라이브 · 시간 측정</summary>
+  <div class="content">
+    <p>플래시카드 앱 → <strong>혼자 연습</strong> 모드 (또는 진단 다시) → 학생이 카드 하나씩 소리내어 읽음.</p>
+    <p><strong>스톱워치로 40장 총 시간 측정</strong>. 다 읽은 뒤 막혔던 5개 골라서 3번씩 반복.</p>
+    <div class="callout ok"><span class="lbl">이 숫자도 기록</span>총 시간(초) · 틀린 개수</div>
+    <p><strong>강사 개입</strong>: 틀린 발음은 <strong>한 번만</strong> 교정. 완벽 X, 흐름 O. "빨리 훑는 감각"이 목표.</p>
+  </div>
+</details>
+
+<details class="phase">
+  <summary><span class="time">115–120분</span> 숙제 안내 · 마무리</summary>
+  <div class="content">
+    <p>학생에게 <strong>같은 앱을 폰에서도 열도록</strong> 안내:</p>
+    <ol>
+      <li>강사가 폰으로 <strong>플래시카드 URL</strong>을 카톡으로 보내기</li>
+      <li>학생이 접속 → 우측 상단 <strong>🌐 한국어</strong> 눌러 <strong>English</strong>로 전환</li>
+      <li>매일 <strong>15분</strong>만: <strong>Solo Practice</strong> 모드로 카드 넘기기</li>
+      <li>모르는 자모 나오면 <strong>🔊 발음</strong> 버튼 눌러 듣기</li>
+      <li>다음 수업 하루 전까지 카톡으로 <strong>진행 상황 공유</strong> (막힌 자모 있으면 알려주세요)</li>
+    </ol>
+    <p><strong>학생에게 강조</strong>: <span class="quote">"매일 15분입니다. 하루 몰아서 1시간 하는 것보다 매일 15분이 훨씬 강해요. 시간 없는 날은 5분이라도. 안 하고 넘어가는 것보다 5분이 낫습니다."</span></p>
+  </div>
+</details>
+
+<hr>
+
+<h2>📊 오늘 반드시 기록할 것</h2>
+<div class="card">
+  <p style="color:var(--muted);font-size:14px;margin-bottom:12px">4주 뒤 이 숫자와 나란히 놓으면 성장이 눈에 보임. 노트나 폰 메모에 남기기.</p>
+  <div class="record-grid">
+    <div class="record-row"><span class="k">진단: 자모 40장 총 시간</span><span class="v">___초</span></div>
+    <div class="record-row"><span class="k">진단: 카드당 평균</span><span class="v">___초</span></div>
+    <div class="record-row"><span class="k">진단: 정확도</span><span class="v">___%</span></div>
+    <div class="record-row"><span class="k">진단: 틀린 자모 목록</span><span class="v">___</span></div>
+    <div class="record-row"><span class="k">읽기: 40장 총 시간</span><span class="v">___초</span></div>
+    <div class="record-row"><span class="k">읽기: 틀린 개수</span><span class="v">___개</span></div>
+    <div class="record-row"><span class="k">학생 매일 연습 시간대</span><span class="v">___</span></div>
+    <div class="record-row"><span class="k">학생 학습 동기</span><span class="v">___</span></div>
+  </div>
+</div>
+
+<h2>💬 학생에게 보낼 카톡 (수업 직후)</h2>
+<div class="card">
+  <p style="font-size:14px;color:var(--muted);margin-bottom:10px">복붙해서 보내세요. 이름만 [ ]에 바꿔쓰기.</p>
+  <div class="quote" style="font-style:normal;background:var(--bg);padding:14px;border-radius:8px;font-size:14px">
+    Hi [student]!<br><br>
+    Great first class today. Here's your practice tool:<br>
+    https://tripwantofficial-jpg.github.io/korean-tutoring/lesson-01/flashcards.html<br><br>
+    Open it → tap <strong>🌐 한국어</strong> at top right to switch to English → tap <strong>Solo Practice</strong>. Tap a card to reveal the answer, tap again for next. If you're not sure how to pronounce something, tap the <strong>🔊</strong> button.<br><br>
+    15 minutes a day is enough. Even 5 min on a busy day beats skipping. See you next week!
+  </div>
+</div>
+
+<h2>⚠️ 놓치면 안 되는 것</h2>
+<div class="card">
+  <ul>
+    <li><span class="tick">✓</span>진단 숫자 3개 (총 시간·정확도·틀린 목록) 반드시 <strong>노트에</strong></li>
+    <li><span class="tick">✓</span>플래시카드 URL 학생에게 카톡 전송</li>
+    <li><span class="tick">✓</span>학생과 <strong>매일 15분 시간대</strong> 함께 정하기</li>
+    <li><span class="cross">✗</span>개념 설명 길게 하지 말 것 (반복이 답)</li>
+    <li><span class="cross">✗</span>학생이 틀렸다고 이유 설명 길게 X (감으로 익힘)</li>
+    <li><span class="cross">✗</span>완벽 요구 X (첫 수업은 기준선일 뿐)</li>
+  </ul>
+</div>
+
+<div class="footer-note">
+  🎯 오늘의 한 문장<br>
+  "숫자를 기록해서 4주 뒤 함께 놀라기."
+</div>
+
+</body>
+</html>
