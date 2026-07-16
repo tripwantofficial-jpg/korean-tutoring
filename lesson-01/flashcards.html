@@ -603,6 +603,172 @@
     outline-offset: 2px;
   }
 
+  /* ---------- Session modal (card viewing) ---------- */
+  .session-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .session-header {
+    flex: 0 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .session-back {
+    background: transparent;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .session-back:hover { color: var(--ink); border-color: var(--muted); }
+  .session-stats-mini {
+    display: flex;
+    gap: 20px;
+  }
+  .session-stats-mini .s-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.15;
+    gap: 2px;
+  }
+  .session-stats-mini .s-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .session-stats-mini .s-value {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .session-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 24px;
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Wrapper that provides the available space for the square card */
+  .session-card-slot {
+    flex: 1;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .session-card {
+    aspect-ratio: 1;
+    /* vh fallback first, then dvh progressive override */
+    width: min(100%, calc(100vh - 220px), 520px);
+    width: min(100%, calc(100dvh - 220px), 520px);
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: transform 0.15s ease;
+  }
+  .session-card:hover { transform: translateY(-2px); }
+  .session-card.flipping { animation: flip 0.35s ease; }
+  .session-card .card-face {
+    font-size: min(28vw, 34vh, 220px);
+    line-height: 1;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+  .session-card .card-face.answer {
+    font-size: min(14vw, 16vh, 100px);
+  }
+  .session-card .card-index {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .session-card .card-hint {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .session-card .card-reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .session-card .card-reveal.hidden { display: none; }
+  .session-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 520px;
+    justify-content: center;
+  }
+  .session-actions .btn {
+    flex: 1;
+    max-width: 180px;
+  }
+  @media (max-width: 720px) {
+    .session-header { padding: 10px 14px; }
+    .session-stats-mini { gap: 12px; }
+    .session-stats-mini .s-value { font-size: 13px; }
+    .session-body { padding: 16px; gap: 16px; }
+    .session-card { border-radius: 20px; padding: 18px; }
+    .session-card .card-face { font-size: min(52vw, 40vh, 220px); }
+    .session-card .card-face.answer { font-size: min(22vw, 18vh, 110px); }
+    .session-actions .btn {
+      padding: 12px 8px;
+      font-size: 13px;
+      min-width: 0;
+    }
+    .session-actions .btn .kbd { display: none; }
+    .session-back { font-size: 12px; padding: 6px 10px; }
+  }
+
   /* ---------- Landing page ---------- */
   .landing {
     display: flex;
@@ -1621,14 +1787,19 @@
     if (timerId) { clearInterval(timerId); timerId = null; }
   }
   function updateTimer() {
-    const el = document.getElementById('timer');
-    if (!el) return;
-    if (!state.startedAt) { el.textContent = '0:00'; return; }
-    const now = state.endedAt || performance.now();
-    const s = (now - state.startedAt) / 1000;
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    el.textContent = `${m}:${String(sec).padStart(2,'0')}`;
+    let text;
+    if (!state.startedAt) {
+      text = '0:00';
+    } else {
+      const now = state.endedAt || performance.now();
+      const s = (now - state.startedAt) / 1000;
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      text = `${m}:${String(sec).padStart(2,'0')}`;
+    }
+    document.querySelectorAll('#timer, #session-timer').forEach(el => {
+      el.textContent = text;
+    });
   }
   function formatTime(ms) {
     const s = ms / 1000;
@@ -1850,16 +2021,37 @@
     }
 
     main.innerHTML = `
-      <div class="card-wrap">
-        <div class="card" id="card" role="button" tabindex="0" aria-label="Flashcard ${state.index + 1} of ${total}">
-          <span class="card-index mono">${state.index + 1} / ${total}</span>
-          ${faceContent}
-          <div class="card-reveal ${showReveal ? '' : 'hidden'}">
-            ${revealContent}
+      <div class="session-modal" role="dialog" aria-modal="true">
+        <div class="session-header">
+          <button class="session-back" id="session-back">${t('end_btn_home')}</button>
+          <div class="session-stats-mini">
+            <div class="s-item">
+              <span class="s-label">${t('stat_progress')}</span>
+              <span class="s-value">${state.index + 1} / ${total}</span>
+            </div>
+            <div class="s-item">
+              <span class="s-label">${t('stat_time')}</span>
+              <span class="s-value" id="session-timer">0:00</span>
+            </div>
+            <div class="s-item">
+              <span class="s-label">${t('stat_wrong')}</span>
+              <span class="s-value" style="color:${state.wrongThisRound.length ? 'var(--wrong)' : 'inherit'}">${state.wrongThisRound.length}</span>
+            </div>
           </div>
-          <span class="card-hint">${hint}</span>
         </div>
-        <div class="actions">${actions}</div>
+        <div class="session-body">
+          <div class="session-card-slot">
+            <div class="session-card" id="card" role="button" tabindex="0" aria-label="Flashcard ${state.index + 1} of ${total}">
+              <span class="card-index">${state.index + 1} / ${total}</span>
+              ${faceContent}
+              <div class="card-reveal ${showReveal ? '' : 'hidden'}">
+                ${revealContent}
+              </div>
+              <span class="card-hint">${hint}</span>
+            </div>
+          </div>
+          <div class="session-actions">${actions}</div>
+        </div>
       </div>
     `;
 
@@ -1870,11 +2062,13 @@
         flip();
       }
     };
+    document.getElementById('session-back').onclick = () => newSession();
     const bindOr = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
     bindOr('btn-wrong', () => nextCard('wrong'));
     bindOr('btn-right', () => nextCard('right'));
     bindOr('btn-flip', flip);
     bindOr('btn-next', () => nextCard());
+    updateTimer();
   }
 
   function renderEnd() {
