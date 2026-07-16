@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자모 플래시카드 · Week 1</title>
+<style>
+  :root {
+    --bg: #F6F1E7;
+    --card-bg: #FFFCF6;
+    --ink: #1F1B16;
+    --muted: #8B7F6D;
+    --rule: #E2D9C7;
+    --accent: #2E4372;
+    --correct: #3F6B3A;
+    --wrong: #A83E2A;
+    --btn-shadow: 0 1px 0 rgba(31,27,22,0.08);
+    --card-shadow: 0 30px 60px -35px rgba(31,27,22,0.35), 0 4px 12px -4px rgba(31,27,22,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17130E;
+      --card-bg: #211C16;
+      --ink: #F1EADB;
+      --muted: #8D8474;
+      --rule: #2E2823;
+      --accent: #8FA5D6;
+      --correct: #7BAF71;
+      --wrong: #D97960;
+      --btn-shadow: 0 1px 0 rgba(0,0,0,0.4);
+      --card-shadow: 0 40px 80px -40px rgba(0,0,0,0.7), 0 4px 12px -4px rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F6F1E7; --card-bg: #FFFCF6; --ink: #1F1B16; --muted: #8B7F6D;
+    --rule: #E2D9C7; --accent: #2E4372; --correct: #3F6B3A; --wrong: #A83E2A;
+    --btn-shadow: 0 1px 0 rgba(31,27,22,0.08);
+    --card-shadow: 0 30px 60px -35px rgba(31,27,22,0.35), 0 4px 12px -4px rgba(31,27,22,0.08);
+  }
+  :root[data-theme="dark"] {
+    --bg: #17130E; --card-bg: #211C16; --ink: #F1EADB; --muted: #8D8474;
+    --rule: #2E2823; --accent: #8FA5D6; --correct: #7BAF71; --wrong: #D97960;
+    --btn-shadow: 0 1px 0 rgba(0,0,0,0.4);
+    --card-shadow: 0 40px 80px -40px rgba(0,0,0,0.7), 0 4px 12px -4px rgba(0,0,0,0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  .korean {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Nanum Gothic", system-ui, sans-serif;
+  }
+  .mono {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .brand-mark {
+    font-size: 20px;
+    line-height: 1;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .brand-title {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .segmented {
+    display: inline-flex;
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .segmented button {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: inherit;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+  .segmented button:hover { color: var(--ink); }
+  .segmented button.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.15;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-value {
+    font-size: 16px;
+  }
+  .stat-value.mono { font-size: 15px; }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .deck-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .deck-filter label {
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  .deck-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .chip {
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: inherit;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover:not(:disabled) { color: var(--ink); border-color: var(--muted); }
+  .chip.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+  .chip:disabled { opacity: 0.35; cursor: not-allowed; }
+  .chip.set-chip {
+    font-weight: 500;
+  }
+  .chip.set-chip.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .toolbar-right {
+    display: flex;
+    gap: 8px;
+  }
+  .icon-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: inherit;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--muted); }
+
+  /* ---------- Main ---------- */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: safe center;
+    justify-content: safe center;
+    padding: 24px;
+    overflow: auto;
+    position: relative;
+  }
+
+  /* ---------- Card ---------- */
+  .card-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 100%;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    width: min(560px, 88vw);
+    aspect-ratio: 3 / 4;
+    max-height: calc(100vh - 260px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--card-shadow);
+    padding: 32px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card:active { transform: translateY(0); }
+  .card.flipping {
+    animation: flip 0.35s ease;
+  }
+  @keyframes flip {
+    0% { transform: rotateY(0); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card:hover { transition: none; transform: none; }
+    .card.flipping { animation: none; }
+  }
+
+  .card-index {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .card-hint {
+    position: absolute;
+    bottom: 20px;
+    right: 24px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .card-face {
+    font-size: clamp(120px, 26vw, 260px);
+    line-height: 1;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .card-face.answer {
+    font-size: clamp(72px, 14vw, 140px);
+  }
+
+  .card-reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    min-height: 60px;
+  }
+  .card-reveal.hidden { visibility: hidden; }
+  .card-sound {
+    font-size: 24px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    font-weight: 500;
+  }
+  .card-name {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- Action buttons ---------- */
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    padding: 12px 22px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    min-width: 108px;
+    box-shadow: var(--btn-shadow);
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+  .btn.ghost:hover { border-color: var(--muted); }
+  .btn.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong);
+    color: #FFF8F3;
+  }
+  .btn.correct {
+    background: var(--correct);
+    border-color: var(--correct);
+    color: #F5FAF3;
+  }
+  .btn .kbd {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 6px;
+    font-size: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    opacity: 0.7;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    vertical-align: 1px;
+  }
+  .btn.ghost .kbd {
+    border-color: var(--rule);
+    color: var(--muted);
+  }
+
+  /* ---------- Start / End screens ---------- */
+  .screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 520px;
+    padding: 40px 24px;
+  }
+  .screen h1 {
+    font-size: 34px;
+    font-weight: 500;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .screen p {
+    color: var(--muted);
+    margin: 0 0 32px;
+    font-size: 15px;
+    max-width: 42ch;
+    text-wrap: balance;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .result-cell {
+    background: var(--card-bg);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .result-cell .label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .result-cell .value {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  /* ---------- Review grid (end of round) ---------- */
+  .review-block {
+    margin-top: 8px;
+    padding: 20px 20px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 640px;
+    text-align: left;
+  }
+  .review-block h3 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 4px;
+    font-weight: 500;
+  }
+  .review-block .review-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .review-tile {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--wrong);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 76px;
+  }
+  .review-tile .rt-char {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    font-size: 26px;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .review-tile .rt-sound {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .review-tile .rt-meaning {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+
+  /* ---------- Round chip badge on end screen ---------- */
+  .round-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--card-bg);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  /* ---------- Round history (celebration) ---------- */
+  .round-history {
+    margin-top: 16px;
+    padding: 18px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .round-history h3 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px;
+    font-weight: 500;
+    text-align: left;
+  }
+  .round-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .round-row:last-child { border-bottom: none; }
+  .round-row .r-num {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .round-row .r-detail {
+    font-variant-numeric: tabular-nums;
+  }
+  .round-row .r-wrong {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .round-row .r-wrong strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .round-row.cleared .r-wrong strong { color: var(--correct); }
+
+  .screen-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 10px 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+  .shortcuts {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .shortcut {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .shortcut kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--card-bg);
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+
+  /* ---------- Focus states ---------- */
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Landing page ---------- */
+  .landing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    max-width: 1080px;
+    padding: 32px 24px;
+    text-align: center;
+    width: 100%;
+  }
+  .landing-hero { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .landing-mark {
+    font-size: 54px;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .landing-hero h1 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .landing-hero p {
+    color: var(--muted);
+    max-width: 48ch;
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+  .landing-deck-note {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .landing-deck-note strong { color: var(--ink); font-weight: 500; }
+
+  .mode-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    width: 100%;
+  }
+  .mode-card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 24px 22px 22px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+    transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 220px;
+  }
+  .mode-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px -20px rgba(31,27,22,0.28);
+  }
+  .mode-card-tag {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mode-card-icon {
+    font-size: 26px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .mode-card h3 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 4px 0 0;
+    letter-spacing: -0.005em;
+  }
+  .mode-card p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.55;
+    flex: 1;
+  }
+  .mode-card-cta {
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .text-link {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .text-link:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- Help modal ---------- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,12,8,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .modal {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    max-width: 540px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 28px 32px 32px;
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.4);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 4px;
+  }
+  .modal h2 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .modal h3 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 24px 0 8px;
+    font-weight: 500;
+  }
+  .modal p {
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0 0 8px;
+  }
+  .modal ul {
+    padding-left: 18px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.75;
+    margin: 0;
+  }
+  .modal ul li { margin-bottom: 4px; }
+  .modal strong { font-weight: 500; }
+  .modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 22px;
+    padding: 0 4px;
+    line-height: 1;
+    margin: -4px -8px 0 0;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal .kbd-inline {
+    display: inline-block;
+    padding: 2px 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--bg);
+    margin: 0 2px;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 780px) {
+    .mode-cards { grid-template-columns: 1fr; }
+    .mode-card { min-height: 0; }
+  }
+  @media (max-width: 720px) {
+    header {
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 16px;
+    }
+    .stats { gap: 14px; }
+    .stat-value { font-size: 14px; }
+    .toolbar { padding: 10px 16px; }
+    .toolbar-right { width: 100%; justify-content: flex-end; }
+    main { padding: 12px; }
+    .btn { min-width: 92px; padding: 12px 16px; font-size: 13px; }
+    .btn .kbd { display: none; }
+    footer { font-size: 10px; padding: 8px 16px; }
+    .shortcuts { display: none; }
+    .landing-hero h1 { font-size: 24px; }
+    .modal { padding: 22px; }
+  }
+  @media (max-width: 480px) {
+    .brand-title { display: none; }
+    .segmented button { padding: 5px 10px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-mark korean">가</span>
+    <span class="brand-title">자모 플래시카드 · Week 1</span>
+  </div>
+  <div class="segmented" role="tablist" aria-label="모드">
+    <button class="active" data-mode="diagnostic" role="tab">진단</button>
+    <button data-mode="study" role="tab">연습</button>
+    <button data-mode="reverse" role="tab">역방향</button>
+  </div>
+  <div class="stats" id="stats" aria-live="polite">
+    <div class="stat"><span class="stat-label">진행</span><span class="stat-value mono" id="progress">0 / 0</span></div>
+    <div class="stat"><span class="stat-label">시간</span><span class="stat-value mono" id="timer">0:00</span></div>
+    <div class="stat"><span class="stat-label">틀림</span><span class="stat-value mono" id="wrong-count">0</span></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="deck-filter">
+    <label>세트</label>
+    <div class="deck-chips" id="set-chips">
+      <button class="chip set-chip active" data-set="jamo">자모 40</button>
+      <button class="chip set-chip" data-set="word">단어 100</button>
+    </div>
+    <label style="margin-left:12px">덱</label>
+    <div class="deck-chips" id="deck-chips">
+      <!-- populated by JS based on current set -->
+    </div>
+  </div>
+  <div class="toolbar-right">
+    <button class="icon-btn" id="header-help" title="사용법">? 사용법</button>
+    <button class="icon-btn" id="theme-toggle" title="테마 전환">◐ 테마</button>
+    <button class="icon-btn" id="restart">↻ 다시</button>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<footer>
+  <div class="shortcuts">
+    <span class="shortcut"><kbd>Space</kbd> 다음·시작</span>
+    <span class="shortcut"><kbd>F</kbd> 뒤집기</span>
+    <span class="shortcut"><kbd>←</kbd> 틀림</span>
+    <span class="shortcut"><kbd>→</kbd> 맞음</span>
+    <span class="shortcut"><kbd>R</kbd> 다시</span>
+  </div>
+  <div>4주 부트캠프 · Week 1 · 자모 40</div>
+</footer>
+
+<script>
+  // ================================================================
+  // Data
+  // ================================================================
+  const JAMO = [
+    // consonants — basic 9
+    {id:'ㄱ', type:'jamo', char:'ㄱ', name:'기역', sound:'g / k',         groups:['consonant','basic']},
+    {id:'ㄴ', type:'jamo', char:'ㄴ', name:'니은', sound:'n',             groups:['consonant','basic']},
+    {id:'ㄷ', type:'jamo', char:'ㄷ', name:'디귿', sound:'d / t',         groups:['consonant','basic']},
+    {id:'ㄹ', type:'jamo', char:'ㄹ', name:'리을', sound:'r / l',         groups:['consonant','basic']},
+    {id:'ㅁ', type:'jamo', char:'ㅁ', name:'미음', sound:'m',             groups:['consonant','basic']},
+    {id:'ㅂ', type:'jamo', char:'ㅂ', name:'비읍', sound:'b / p',         groups:['consonant','basic']},
+    {id:'ㅅ', type:'jamo', char:'ㅅ', name:'시옷', sound:'s',             groups:['consonant','basic']},
+    {id:'ㅇ', type:'jamo', char:'ㅇ', name:'이응', sound:'silent · ng',   groups:['consonant','basic']},
+    {id:'ㅈ', type:'jamo', char:'ㅈ', name:'지읒', sound:'j',             groups:['consonant','basic']},
+    // consonants — aspirated 5
+    {id:'ㅊ', type:'jamo', char:'ㅊ', name:'치읓', sound:'ch',            groups:['consonant','hard']},
+    {id:'ㅋ', type:'jamo', char:'ㅋ', name:'키읔', sound:'k · aspirated', groups:['consonant','hard']},
+    {id:'ㅌ', type:'jamo', char:'ㅌ', name:'티읕', sound:'t · aspirated', groups:['consonant','hard']},
+    {id:'ㅍ', type:'jamo', char:'ㅍ', name:'피읖', sound:'p · aspirated', groups:['consonant','hard']},
+    {id:'ㅎ', type:'jamo', char:'ㅎ', name:'히읗', sound:'h',             groups:['consonant','hard']},
+    // consonants — tense 5
+    {id:'ㄲ', type:'jamo', char:'ㄲ', name:'쌍기역', sound:'kk',          groups:['consonant','hard']},
+    {id:'ㄸ', type:'jamo', char:'ㄸ', name:'쌍디귿', sound:'tt',          groups:['consonant','hard']},
+    {id:'ㅃ', type:'jamo', char:'ㅃ', name:'쌍비읍', sound:'pp',          groups:['consonant','hard']},
+    {id:'ㅆ', type:'jamo', char:'ㅆ', name:'쌍시옷', sound:'ss',          groups:['consonant','hard']},
+    {id:'ㅉ', type:'jamo', char:'ㅉ', name:'쌍지읒', sound:'jj',          groups:['consonant','hard']},
+    // vowels — basic 10
+    {id:'ㅏ', type:'jamo', char:'ㅏ', name:'아', sound:'a',    groups:['vowel','basic']},
+    {id:'ㅑ', type:'jamo', char:'ㅑ', name:'야', sound:'ya',   groups:['vowel','basic']},
+    {id:'ㅓ', type:'jamo', char:'ㅓ', name:'어', sound:'eo',   groups:['vowel','basic']},
+    {id:'ㅕ', type:'jamo', char:'ㅕ', name:'여', sound:'yeo',  groups:['vowel','basic']},
+    {id:'ㅗ', type:'jamo', char:'ㅗ', name:'오', sound:'o',    groups:['vowel','basic']},
+    {id:'ㅛ', type:'jamo', char:'ㅛ', name:'요', sound:'yo',   groups:['vowel','basic']},
+    {id:'ㅜ', type:'jamo', char:'ㅜ', name:'우', sound:'u',    groups:['vowel','basic']},
+    {id:'ㅠ', type:'jamo', char:'ㅠ', name:'유', sound:'yu',   groups:['vowel','basic']},
+    {id:'ㅡ', type:'jamo', char:'ㅡ', name:'으', sound:'eu',   groups:['vowel','basic']},
+    {id:'ㅣ', type:'jamo', char:'ㅣ', name:'이', sound:'i',    groups:['vowel','basic']},
+    // vowels — complex 11
+    {id:'ㅐ', type:'jamo', char:'ㅐ', name:'애', sound:'ae',       groups:['vowel','complex']},
+    {id:'ㅒ', type:'jamo', char:'ㅒ', name:'얘', sound:'yae',      groups:['vowel','complex']},
+    {id:'ㅔ', type:'jamo', char:'ㅔ', name:'에', sound:'e',        groups:['vowel','complex']},
+    {id:'ㅖ', type:'jamo', char:'ㅖ', name:'예', sound:'ye',       groups:['vowel','complex']},
+    {id:'ㅘ', type:'jamo', char:'ㅘ', name:'와', sound:'wa',       groups:['vowel','complex']},
+    {id:'ㅙ', type:'jamo', char:'ㅙ', name:'왜', sound:'wae',      groups:['vowel','complex']},
+    {id:'ㅚ', type:'jamo', char:'ㅚ', name:'외', sound:'oe · we',  groups:['vowel','complex']},
+    {id:'ㅝ', type:'jamo', char:'ㅝ', name:'워', sound:'wo',       groups:['vowel','complex']},
+    {id:'ㅞ', type:'jamo', char:'ㅞ', name:'웨', sound:'we',       groups:['vowel','complex']},
+    {id:'ㅟ', type:'jamo', char:'ㅟ', name:'위', sound:'wi',       groups:['vowel','complex']},
+    {id:'ㅢ', type:'jamo', char:'ㅢ', name:'의', sound:'ui',       groups:['vowel','complex']},
+  ];
+
+  // 기초단어 100개 — 7 대표음 받침만 사용. 1주차 학생이 즉시 읽을 수 있는 실용 어휘.
+  const WORDS = [
+    // 명사 30 — 일상 사물·신체·자연
+    {id:'물',     type:'word', char:'물',     sound:'mul',        meaning:'water',       groups:['noun']},
+    {id:'밥',     type:'word', char:'밥',     sound:'bap',        meaning:'rice / meal', groups:['noun']},
+    {id:'집',     type:'word', char:'집',     sound:'jip',        meaning:'house',       groups:['noun']},
+    {id:'책',     type:'word', char:'책',     sound:'chaek',      meaning:'book',        groups:['noun']},
+    {id:'문',     type:'word', char:'문',     sound:'mun',        meaning:'door',        groups:['noun']},
+    {id:'손',     type:'word', char:'손',     sound:'son',        meaning:'hand',        groups:['noun']},
+    {id:'발',     type:'word', char:'발',     sound:'bal',        meaning:'foot',        groups:['noun']},
+    {id:'눈',     type:'word', char:'눈',     sound:'nun',        meaning:'eye / snow',  groups:['noun']},
+    {id:'코',     type:'word', char:'코',     sound:'ko',         meaning:'nose',        groups:['noun']},
+    {id:'입',     type:'word', char:'입',     sound:'ip',         meaning:'mouth',       groups:['noun']},
+    {id:'귀',     type:'word', char:'귀',     sound:'gwi',        meaning:'ear',         groups:['noun']},
+    {id:'옷',     type:'word', char:'옷',     sound:'ot',         meaning:'clothes',     groups:['noun']},
+    {id:'가방',   type:'word', char:'가방',   sound:'ga-bang',    meaning:'bag',         groups:['noun']},
+    {id:'신발',   type:'word', char:'신발',   sound:'sin-bal',    meaning:'shoes',       groups:['noun']},
+    {id:'돈',     type:'word', char:'돈',     sound:'don',        meaning:'money',       groups:['noun']},
+    {id:'시간',   type:'word', char:'시간',   sound:'si-gan',     meaning:'time',        groups:['noun']},
+    {id:'하늘',   type:'word', char:'하늘',   sound:'ha-neul',    meaning:'sky',         groups:['noun']},
+    {id:'산',     type:'word', char:'산',     sound:'san',        meaning:'mountain',    groups:['noun']},
+    {id:'바다',   type:'word', char:'바다',   sound:'ba-da',      meaning:'sea',         groups:['noun']},
+    {id:'꽃',     type:'word', char:'꽃',     sound:'kkot',       meaning:'flower',      groups:['noun']},
+    {id:'나무',   type:'word', char:'나무',   sound:'na-mu',      meaning:'tree',        groups:['noun']},
+    {id:'길',     type:'word', char:'길',     sound:'gil',        meaning:'road',        groups:['noun']},
+    {id:'방',     type:'word', char:'방',     sound:'bang',       meaning:'room',        groups:['noun']},
+    {id:'창문',   type:'word', char:'창문',   sound:'chang-mun',  meaning:'window',      groups:['noun']},
+    {id:'의자',   type:'word', char:'의자',   sound:'ui-ja',      meaning:'chair',       groups:['noun']},
+    {id:'책상',   type:'word', char:'책상',   sound:'chaek-sang', meaning:'desk',        groups:['noun']},
+    {id:'침대',   type:'word', char:'침대',   sound:'chim-dae',   meaning:'bed',         groups:['noun']},
+    {id:'수건',   type:'word', char:'수건',   sound:'su-geon',    meaning:'towel',       groups:['noun']},
+    {id:'우산',   type:'word', char:'우산',   sound:'u-san',      meaning:'umbrella',    groups:['noun']},
+    {id:'지갑',   type:'word', char:'지갑',   sound:'ji-gap',     meaning:'wallet',      groups:['noun']},
+
+    // 사람·가족 10
+    {id:'나',       type:'word', char:'나',       sound:'na',              meaning:'I',                        groups:['people']},
+    {id:'너',       type:'word', char:'너',       sound:'neo',             meaning:'you (casual)',             groups:['people']},
+    {id:'사람',     type:'word', char:'사람',     sound:'sa-ram',          meaning:'person',                   groups:['people']},
+    {id:'친구',     type:'word', char:'친구',     sound:'chin-gu',         meaning:'friend',                   groups:['people']},
+    {id:'엄마',     type:'word', char:'엄마',     sound:'eom-ma',          meaning:'mom',                      groups:['people']},
+    {id:'아빠',     type:'word', char:'아빠',     sound:'a-ppa',           meaning:'dad',                      groups:['people']},
+    {id:'아이',     type:'word', char:'아이',     sound:'a-i',             meaning:'child',                    groups:['people']},
+    {id:'아기',     type:'word', char:'아기',     sound:'a-gi',            meaning:'baby',                     groups:['people']},
+    {id:'언니',     type:'word', char:'언니',     sound:'eon-ni',          meaning:'older sister (of woman)',  groups:['people']},
+    {id:'선생님',   type:'word', char:'선생님',   sound:'seon-saeng-nim',  meaning:'teacher',                  groups:['people']},
+
+    // 음식·음료 15
+    {id:'국',       type:'word', char:'국',       sound:'guk',        meaning:'soup',        groups:['food']},
+    {id:'김치',     type:'word', char:'김치',     sound:'gim-chi',    meaning:'kimchi',      groups:['food']},
+    {id:'고기',     type:'word', char:'고기',     sound:'go-gi',      meaning:'meat',        groups:['food']},
+    {id:'생선',     type:'word', char:'생선',     sound:'saeng-seon', meaning:'fish',        groups:['food']},
+    {id:'계란',     type:'word', char:'계란',     sound:'gye-ran',    meaning:'egg',         groups:['food']},
+    {id:'빵',       type:'word', char:'빵',       sound:'ppang',      meaning:'bread',       groups:['food']},
+    {id:'국수',     type:'word', char:'국수',     sound:'guk-su',     meaning:'noodles',     groups:['food']},
+    {id:'우유',     type:'word', char:'우유',     sound:'u-yu',       meaning:'milk',        groups:['food']},
+    {id:'주스',     type:'word', char:'주스',     sound:'ju-seu',     meaning:'juice',       groups:['food']},
+    {id:'커피',     type:'word', char:'커피',     sound:'keo-pi',     meaning:'coffee',      groups:['food']},
+    {id:'차',       type:'word', char:'차',       sound:'cha',        meaning:'tea',         groups:['food']},
+    {id:'사과',     type:'word', char:'사과',     sound:'sa-gwa',     meaning:'apple',       groups:['food']},
+    {id:'바나나',   type:'word', char:'바나나',   sound:'ba-na-na',   meaning:'banana',      groups:['food']},
+    {id:'딸기',     type:'word', char:'딸기',     sound:'ttal-gi',    meaning:'strawberry',  groups:['food']},
+    {id:'김밥',     type:'word', char:'김밥',     sound:'gim-bap',    meaning:'kimbap',      groups:['food']},
+
+    // 동사 15 (사전형)
+    {id:'가다',     type:'word', char:'가다',     sound:'ga-da',       meaning:'to go',      groups:['verb']},
+    {id:'오다',     type:'word', char:'오다',     sound:'o-da',        meaning:'to come',    groups:['verb']},
+    {id:'먹다',     type:'word', char:'먹다',     sound:'meok-da',     meaning:'to eat',     groups:['verb']},
+    {id:'마시다',   type:'word', char:'마시다',   sound:'ma-si-da',    meaning:'to drink',   groups:['verb']},
+    {id:'자다',     type:'word', char:'자다',     sound:'ja-da',       meaning:'to sleep',   groups:['verb']},
+    {id:'보다',     type:'word', char:'보다',     sound:'bo-da',       meaning:'to see',     groups:['verb']},
+    {id:'듣다',     type:'word', char:'듣다',     sound:'deut-da',     meaning:'to listen',  groups:['verb']},
+    {id:'말하다',   type:'word', char:'말하다',   sound:'mal-ha-da',   meaning:'to speak',   groups:['verb']},
+    {id:'사다',     type:'word', char:'사다',     sound:'sa-da',       meaning:'to buy',     groups:['verb']},
+    {id:'팔다',     type:'word', char:'팔다',     sound:'pal-da',      meaning:'to sell',    groups:['verb']},
+    {id:'만나다',   type:'word', char:'만나다',   sound:'man-na-da',   meaning:'to meet',    groups:['verb']},
+    {id:'하다',     type:'word', char:'하다',     sound:'ha-da',       meaning:'to do',      groups:['verb']},
+    {id:'알다',     type:'word', char:'알다',     sound:'al-da',       meaning:'to know',    groups:['verb']},
+    {id:'살다',     type:'word', char:'살다',     sound:'sal-da',      meaning:'to live',    groups:['verb']},
+    {id:'주다',     type:'word', char:'주다',     sound:'ju-da',       meaning:'to give',    groups:['verb']},
+
+    // 형용사 10
+    {id:'좋다',     type:'word', char:'좋다',     sound:'jo-ta',       meaning:'good',       groups:['adj']},
+    {id:'나쁘다',   type:'word', char:'나쁘다',   sound:'na-ppeu-da',  meaning:'bad',        groups:['adj']},
+    {id:'크다',     type:'word', char:'크다',     sound:'keu-da',      meaning:'big',        groups:['adj']},
+    {id:'작다',     type:'word', char:'작다',     sound:'jak-da',      meaning:'small',      groups:['adj']},
+    {id:'빠르다',   type:'word', char:'빠르다',   sound:'ppa-reu-da',  meaning:'fast',       groups:['adj']},
+    {id:'느리다',   type:'word', char:'느리다',   sound:'neu-ri-da',   meaning:'slow',       groups:['adj']},
+    {id:'예쁘다',   type:'word', char:'예쁘다',   sound:'ye-ppeu-da',  meaning:'pretty',     groups:['adj']},
+    {id:'뜨겁다',   type:'word', char:'뜨겁다',   sound:'tteu-geop-da',meaning:'hot',        groups:['adj']},
+    {id:'차갑다',   type:'word', char:'차갑다',   sound:'cha-gap-da',  meaning:'cold',       groups:['adj']},
+    {id:'쉽다',     type:'word', char:'쉽다',     sound:'swip-da',     meaning:'easy',       groups:['adj']},
+
+    // 시간·숫자 10
+    {id:'하나',     type:'word', char:'하나',     sound:'ha-na',       meaning:'one',        groups:['time']},
+    {id:'둘',       type:'word', char:'둘',       sound:'dul',         meaning:'two',        groups:['time']},
+    {id:'셋',       type:'word', char:'셋',       sound:'set',         meaning:'three',      groups:['time']},
+    {id:'넷',       type:'word', char:'넷',       sound:'net',         meaning:'four',       groups:['time']},
+    {id:'다섯',     type:'word', char:'다섯',     sound:'da-seot',     meaning:'five',       groups:['time']},
+    {id:'오늘',     type:'word', char:'오늘',     sound:'o-neul',      meaning:'today',      groups:['time']},
+    {id:'내일',     type:'word', char:'내일',     sound:'nae-il',      meaning:'tomorrow',   groups:['time']},
+    {id:'어제',     type:'word', char:'어제',     sound:'eo-je',       meaning:'yesterday',  groups:['time']},
+    {id:'아침',     type:'word', char:'아침',     sound:'a-chim',      meaning:'morning',    groups:['time']},
+    {id:'저녁',     type:'word', char:'저녁',     sound:'jeo-nyeok',   meaning:'evening',    groups:['time']},
+
+    // 장소 10
+    {id:'학교',     type:'word', char:'학교',     sound:'hak-gyo',     meaning:'school',     groups:['place']},
+    {id:'회사',     type:'word', char:'회사',     sound:'hoe-sa',      meaning:'company',    groups:['place']},
+    {id:'카페',     type:'word', char:'카페',     sound:'ka-pe',       meaning:'café',       groups:['place']},
+    {id:'식당',     type:'word', char:'식당',     sound:'sik-dang',    meaning:'restaurant', groups:['place']},
+    {id:'병원',     type:'word', char:'병원',     sound:'byeong-won',  meaning:'hospital',   groups:['place']},
+    {id:'공항',     type:'word', char:'공항',     sound:'gong-hang',   meaning:'airport',    groups:['place']},
+    {id:'시장',     type:'word', char:'시장',     sound:'si-jang',     meaning:'market',     groups:['place']},
+    {id:'공원',     type:'word', char:'공원',     sound:'gong-won',    meaning:'park',       groups:['place']},
+    {id:'지하철',   type:'word', char:'지하철',   sound:'ji-ha-cheol', meaning:'subway',     groups:['place']},
+    {id:'은행',     type:'word', char:'은행',     sound:'eun-haeng',   meaning:'bank',       groups:['place']},
+  ];
+
+  // 세트별 카드 조회
+  const CARDS_BY_SET = { jamo: JAMO, word: WORDS };
+
+  // ================================================================
+  // State
+  // ================================================================
+  const STORAGE_KEY = 'jamo-flashcards-v1';
+
+  const state = {
+    set: 'jamo',                  // 'jamo' | 'word'
+    mode: 'diagnostic',           // 'diagnostic' | 'study' | 'reverse'
+    deck: 'all',
+    queue: [],                    // shuffled deck of card ids (this session/round)
+    originalQueue: [],            // full deck when session started (for round 1 reference)
+    index: -1,                    // -1 = start screen, queue.length = end screen
+    revealed: false,
+    startedAt: null,
+    endedAt: null,
+    round: 1,                     // review-drill round counter
+    roundHistory: [],             // [{round, size, wrong, timeMs}, ...] for celebration
+    wrongThisRound: [],           // list of card ids marked wrong (this round)
+    savedWrong: loadWrong(),      // {jamo:[...], word:[...]} from localStorage
+  };
+
+  function loadWrong() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {jamo:[], word:[]};
+      const parsed = JSON.parse(raw);
+      // Backward compat: old flat array → treat as jamo
+      if (Array.isArray(parsed)) return {jamo: parsed, word: []};
+      return {jamo: parsed.jamo || [], word: parsed.word || []};
+    } catch { return {jamo:[], word:[]}; }
+  }
+  function saveWrong(obj) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); } catch {}
+  }
+  function currentSavedWrong() {
+    return state.savedWrong[state.set] || [];
+  }
+
+  // ================================================================
+  // Deck filtering
+  // ================================================================
+  function cardsFor(set, deck) {
+    const pool = CARDS_BY_SET[set] || [];
+    if (deck === 'all') return pool.map(c => c.id);
+    if (deck === 'saved') return currentSavedWrong().filter(id => pool.find(c => c.id === id));
+    return pool.filter(c => c.groups.includes(deck)).map(c => c.id);
+  }
+  function shuffle(arr) {
+    const out = [...arr];
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+    return out;
+  }
+  function cardInfo(id) {
+    return JAMO.find(c => c.id === id) || WORDS.find(c => c.id === id);
+  }
+  // legacy alias for any leftover call sites
+  const jamoInfo = cardInfo;
+
+  // ================================================================
+  // Session control
+  // ================================================================
+  function newSession() {
+    state.queue = shuffle(cardsFor(state.set, state.deck));
+    state.originalQueue = [...state.queue];
+    state.index = -1;
+    state.revealed = false;
+    state.startedAt = null;
+    state.endedAt = null;
+    state.round = 1;
+    state.roundHistory = [];
+    state.wrongThisRound = [];
+    render();
+  }
+  function startSession() {
+    if (state.queue.length === 0) state.queue = shuffle(cardsFor(state.set, state.deck));
+    if (state.originalQueue.length === 0) state.originalQueue = [...state.queue];
+    state.index = 0;
+    state.revealed = false;
+    state.startedAt = performance.now();
+    state.endedAt = null;
+    state.wrongThisRound = [];
+    render();
+    startTimer();
+  }
+  // Start a review-drill round using only the last round's wrong cards.
+  function startReviewRound() {
+    if (state.wrongThisRound.length === 0) return;
+    const nextDeck = shuffle([...state.wrongThisRound]);
+    state.round += 1;
+    state.queue = nextDeck;
+    state.index = 0;
+    state.revealed = false;
+    state.startedAt = performance.now();
+    state.endedAt = null;
+    state.wrongThisRound = [];
+    render();
+    startTimer();
+  }
+  function endSession() {
+    state.endedAt = performance.now();
+    stopTimer();
+    // Persist weak spots for this set (union of prior + this round's wrong)
+    const priorForSet = currentSavedWrong();
+    const combined = Array.from(new Set([...priorForSet, ...state.wrongThisRound]));
+    state.savedWrong[state.set] = combined;
+    saveWrong(state.savedWrong);
+    // Record this round in history
+    state.roundHistory.push({
+      round: state.round,
+      size: state.queue.length,
+      wrong: state.wrongThisRound.length,
+      timeMs: state.endedAt - state.startedAt,
+    });
+    state.index = state.queue.length;
+    render();
+  }
+  function nextCard(mark) {
+    // mark: 'right' | 'wrong' | undefined
+    if (mark === 'wrong') {
+      const cur = state.queue[state.index];
+      if (cur && !state.wrongThisRound.includes(cur)) {
+        state.wrongThisRound.push(cur);
+      }
+    }
+    if (mark === 'right') {
+      // if a card previously in savedWrong is now right (and not wrong this round), remove from saved
+      const cur = state.queue[state.index];
+      const savedList = state.savedWrong[state.set] || [];
+      const idx = savedList.indexOf(cur);
+      if (idx > -1 && !state.wrongThisRound.includes(cur)) {
+        savedList.splice(idx, 1);
+        state.savedWrong[state.set] = savedList;
+        saveWrong(state.savedWrong);
+      }
+    }
+    state.index += 1;
+    state.revealed = false;
+    if (state.index >= state.queue.length) {
+      endSession();
+    } else {
+      render();
+      // Trigger subtle flip animation
+      const card = document.querySelector('.card');
+      if (card) {
+        card.classList.remove('flipping');
+        void card.offsetWidth;
+        card.classList.add('flipping');
+      }
+    }
+  }
+  function flip() {
+    if (state.index < 0 || state.index >= state.queue.length) return;
+    state.revealed = !state.revealed;
+    render();
+  }
+  function clearSavedWrong() {
+    state.savedWrong[state.set] = [];
+    saveWrong(state.savedWrong);
+    if (state.deck === 'saved') {
+      state.deck = 'all';
+    }
+    newSession();
+  }
+
+  // ================================================================
+  // Timer
+  // ================================================================
+  let timerId = null;
+  function startTimer() {
+    stopTimer();
+    timerId = setInterval(updateTimer, 100);
+  }
+  function stopTimer() {
+    if (timerId) { clearInterval(timerId); timerId = null; }
+  }
+  function updateTimer() {
+    const el = document.getElementById('timer');
+    if (!el) return;
+    if (!state.startedAt) { el.textContent = '0:00'; return; }
+    const now = state.endedAt || performance.now();
+    const s = (now - state.startedAt) / 1000;
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    el.textContent = `${m}:${String(sec).padStart(2,'0')}`;
+  }
+  function formatTime(ms) {
+    const s = ms / 1000;
+    if (s < 60) return `${s.toFixed(1)}s`;
+    const m = Math.floor(s / 60);
+    const sec = (s % 60);
+    return `${m}m ${sec.toFixed(0)}s`;
+  }
+
+  // ================================================================
+  // Rendering
+  // ================================================================
+  const main = document.getElementById('main');
+
+  function render() {
+    updateStats();
+    updateSavedChip();
+    if (state.index === -1) renderStart();
+    else if (state.index >= state.queue.length) renderEnd();
+    else renderCard();
+  }
+
+  function updateStats() {
+    const inRound = state.index >= 0 && state.index < state.queue.length;
+    document.getElementById('progress').textContent =
+      inRound ? `${state.index + 1} / ${state.queue.length}` : `${state.queue.length ? state.queue.length : jamoFor(state.deck).length} 장`;
+    document.getElementById('wrong-count').textContent = state.wrongThisRound.length;
+    updateTimer();
+  }
+
+  function updateSavedChip() {
+    const el = document.getElementById('chip-saved');
+    const count = state.savedWrong.length;
+    el.textContent = count ? `약점 · ${count}` : '약점';
+    el.disabled = count === 0;
+  }
+
+  function renderStart() {
+    const deckSize = cardsFor(state.set, state.deck).length;
+    const currentDeckOpt = (DECK_OPTIONS[state.set].find(o => o.key === state.deck)) || {label: '약점'};
+    const isJamo = state.set === 'jamo';
+    const heroTitle = isJamo ? '자모 40 · 플래시카드' : '기초 단어 100 · 플래시카드';
+    const heroBody = isJamo
+      ? '한글 자·모 40개를 반사적으로 알아보는 힘을 기르는 도구예요.'
+      : '자·모를 익힌 뒤 바로 실전 단어로. 뜻은 몰라도 소리대로 읽어내는 훈련.';
+    const reverseTitle = isJamo ? '소리 → 자모' : '뜻 → 단어';
+    const reverseBody = isJamo
+      ? '로마자·이름을 먼저 보고 자모를 떠올려요. 받아쓰기(귀→손) 반사 훈련.'
+      : '영어 뜻을 보고 한국어 단어를 떠올려요. 어휘 인출 훈련.';
+    const diagnosticBody = isJamo
+      ? '시간을 재며 40장을 넘겨요. 학생이 읽으면 강사가 ✓ 또는 ✗ 클릭. 끝나면 정확도·틀린 카드 요약.'
+      : '시간을 재며 단어를 넘겨요. 학생이 소리내어 읽으면 강사가 ✓/✗. 끝나면 정확도·틀린 단어 요약.';
+
+    main.innerHTML = `
+      <div class="landing">
+        <div class="landing-hero">
+          <span class="landing-mark korean">${isJamo ? '가' : '책'}</span>
+          <h1>${heroTitle}</h1>
+          <p>${heroBody}<br>아래에서 상황에 맞는 모드를 골라 시작하세요.</p>
+          <p class="landing-deck-note">현재 덱: <strong>${currentDeckOpt.label}</strong> · <strong>${deckSize}</strong>장 · 위 알약 버튼으로 바꿀 수 있어요.</p>
+        </div>
+        <div class="mode-cards">
+          <button class="mode-card" data-start-mode="diagnostic">
+            <div class="mode-card-tag">수업 중 · 강사가 조작</div>
+            <div class="mode-card-icon">⏱</div>
+            <h3>학생 진단</h3>
+            <p>${diagnosticBody}</p>
+            <div class="mode-card-cta">시작하기 →</div>
+          </button>
+          <button class="mode-card" data-start-mode="study">
+            <div class="mode-card-tag">숙제 · 학생이 조작</div>
+            <div class="mode-card-icon">📖</div>
+            <h3>혼자 연습</h3>
+            <p>자기 페이스로. 카드를 탭하면 답이 보이고, 한 번 더 탭하면 다음 카드. 부담 없이 반복.</p>
+            <div class="mode-card-cta">시작하기 →</div>
+          </button>
+          <button class="mode-card" data-start-mode="reverse">
+            <div class="mode-card-tag">${isJamo ? '받아쓰기 준비' : '어휘 인출'}</div>
+            <div class="mode-card-icon">🔁</div>
+            <h3>${reverseTitle}</h3>
+            <p>${reverseBody}</p>
+            <div class="mode-card-cta">시작하기 →</div>
+          </button>
+        </div>
+        <button id="show-help" class="text-link">? 처음이라 어떻게 쓰는지 모르겠어요</button>
+      </div>
+    `;
+    document.querySelectorAll('[data-start-mode]').forEach(btn => {
+      btn.onclick = () => {
+        state.mode = btn.dataset.startMode;
+        document.querySelectorAll('.segmented button').forEach(b =>
+          b.classList.toggle('active', b.dataset.mode === state.mode));
+        startSession();
+      };
+    });
+    document.getElementById('show-help').onclick = showHelp;
+  }
+
+  function showHelp() {
+    if (document.getElementById('modal-backdrop')) return;
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
+        <div class="modal">
+          <div class="modal-header">
+            <h2>사용법</h2>
+            <button class="modal-close" id="modal-close" aria-label="닫기">✕</button>
+          </div>
+
+          <p>4주 부트캠프 Week 1 도구. <strong>자모 40장</strong>(자음 19 + 모음 21)과 <strong>기초단어 100장</strong>을 반복 훈련합니다.</p>
+
+          <h3>세트 (위 첫 번째 알약 버튼)</h3>
+          <ul>
+            <li><strong>자모 40</strong> — 한글 알파벳 인식 (Week 1 시작)</li>
+            <li><strong>단어 100</strong> — 자모가 익숙해지면 바로 실전 단어 읽기로 (같은 주차 안에 이어서)</li>
+          </ul>
+
+          <h3>수업에서 (강사가 씀)</h3>
+          <ul>
+            <li><strong>학생 진단</strong> 모드를 골라요</li>
+            <li>학생 앞에 화면을 놓고 <strong>시작하기</strong></li>
+            <li>학생이 소리내어 읽으면 강사가 <strong>✓ 맞음</strong> 또는 <strong>✗ 틀림</strong> 클릭</li>
+            <li>모르겠으면 <strong>답 보기</strong> 로 확인 후 판단</li>
+            <li>끝나면 <strong>리뷰 화면</strong> — 놓친 카드의 정답을 눈으로 확인 → <strong>이 N장 다시 도전</strong> 클릭</li>
+            <li>0장 놓칠 때까지 라운드가 반복돼요 → 완주 축하 화면</li>
+            <li>매주 이 숫자(총 시간·정확도)를 기록지에 적으세요</li>
+          </ul>
+
+          <h3>집에서 (학생이 씀)</h3>
+          <ul>
+            <li><strong>혼자 연습</strong> 모드 → 카드 탭하면 답이 나옵니다. 다시 탭하면 다음</li>
+            <li>받아쓰기 감각을 키우고 싶으면 <strong>소리→자모</strong> (또는 단어 세트에서 <strong>뜻→단어</strong>)</li>
+            <li>틀렸다고 표시한 카드는 자동으로 <strong>약점</strong> 덱에 쌓여요. 다음날 약점만 골라 다시 도세요</li>
+          </ul>
+
+          <h3>덱 (두 번째 알약 줄)</h3>
+          <p>전체가 부담이면 자음만·모음만·명사만·동사만 등으로 좁혀서 연습할 수 있어요.</p>
+
+          <h3>키보드 단축키</h3>
+          <ul>
+            <li><span class="kbd-inline">Space</span> 다음 · 시작</li>
+            <li><span class="kbd-inline">F</span> 카드 뒤집기 (답 보기)</li>
+            <li><span class="kbd-inline">←</span> 틀림 · <span class="kbd-inline">→</span> 맞음</li>
+            <li><span class="kbd-inline">R</span> 처음부터 다시</li>
+          </ul>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div.firstElementChild);
+    const close = () => document.getElementById('modal-backdrop')?.remove();
+    document.getElementById('modal-close').onclick = close;
+    document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-backdrop') close();
+    });
+  }
+
+  // Font size for Korean word display — scales down as syllable count grows.
+  function koreanFontSize(text) {
+    const len = [...text].length;
+    if (len <= 1) return 'clamp(120px, 26vw, 260px)';
+    if (len === 2) return 'clamp(90px, 20vw, 200px)';
+    if (len === 3) return 'clamp(70px, 15vw, 150px)';
+    return 'clamp(56px, 12vw, 120px)';
+  }
+
+  function renderCard() {
+    const id = state.queue[state.index];
+    const info = cardInfo(id);
+    const total = state.queue.length;
+    const isWord = info.type === 'word';
+    const isReverse = state.mode === 'reverse';
+
+    // FRONT — what the student sees first
+    let faceContent;
+    if (isReverse) {
+      if (isWord) {
+        // reverse + word: show English meaning big
+        faceContent = `<div class="card-face answer" style="font-size: clamp(36px, 6.5vw, 62px); text-align:center; padding: 0 12px;">${info.meaning}</div>`;
+      } else {
+        // reverse + jamo: show sound + name
+        faceContent = `<div class="card-face answer korean">${info.sound}</div>
+                       <div class="card-name">${info.name}</div>`;
+      }
+    } else {
+      // normal: show the Korean character/word big
+      faceContent = `<div class="card-face korean" style="font-size: ${koreanFontSize(info.char)}">${info.char}</div>`;
+    }
+
+    // REVEAL — what shows on flip
+    let revealContent;
+    if (isReverse) {
+      // reveal shows the Korean form
+      revealContent = `<div class="card-face korean" style="font-size: ${koreanFontSize(info.char)}">${info.char}</div>`;
+    } else {
+      if (isWord) {
+        revealContent = `<div class="card-sound">${info.sound}</div>
+                         <div class="card-name" style="font-size:16px; color:var(--ink); font-family:inherit; letter-spacing:0; text-transform:none; margin-top:4px;">${info.meaning}</div>`;
+      } else {
+        revealContent = `<div class="card-sound">${info.sound}</div>
+                         <div class="card-name">${info.name}</div>`;
+      }
+    }
+
+    const showReveal = state.revealed;
+    const hint = state.mode === 'study'
+      ? (state.revealed ? '다시 탭 → 다음 카드' : '탭하면 답이 보여요')
+      : (state.revealed ? '답 공개됨' : '탭하면 답이 보여요');
+
+    let actions = '';
+    if (state.mode === 'diagnostic') {
+      actions = `
+        <button class="btn wrong" id="btn-wrong">✗ 틀림 <span class="kbd">←</span></button>
+        <button class="btn ghost" id="btn-flip">${state.revealed ? '답 숨기기' : '답 보기'} <span class="kbd">F</span></button>
+        <button class="btn correct" id="btn-right">✓ 맞음 <span class="kbd">→</span></button>
+      `;
+    } else if (state.mode === 'study') {
+      actions = `
+        <button class="btn ghost" id="btn-flip">${state.revealed ? '답 숨기기' : '답 보기'} <span class="kbd">F</span></button>
+        <button class="btn" id="btn-next">다음 <span class="kbd">Space</span></button>
+      `;
+    } else {
+      const revealLabel = state.set === 'word' ? '단어' : '자모';
+      actions = `
+        <button class="btn wrong" id="btn-wrong">✗ 틀림 <span class="kbd">←</span></button>
+        <button class="btn ghost" id="btn-flip">${state.revealed ? `${revealLabel} 숨기기` : `${revealLabel} 보기`} <span class="kbd">F</span></button>
+        <button class="btn correct" id="btn-right">✓ 맞음 <span class="kbd">→</span></button>
+      `;
+    }
+
+    main.innerHTML = `
+      <div class="card-wrap">
+        <div class="card" id="card" role="button" tabindex="0" aria-label="Flashcard ${state.index + 1} of ${total}">
+          <span class="card-index mono">${state.index + 1} / ${total}</span>
+          ${faceContent}
+          <div class="card-reveal ${showReveal ? '' : 'hidden'}">
+            ${revealContent}
+          </div>
+          <span class="card-hint">${hint}</span>
+        </div>
+        <div class="actions">${actions}</div>
+      </div>
+    `;
+
+    document.getElementById('card').onclick = () => {
+      if (state.mode === 'study' && state.revealed) {
+        nextCard();
+      } else {
+        flip();
+      }
+    };
+    const bindOr = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+    bindOr('btn-wrong', () => nextCard('wrong'));
+    bindOr('btn-right', () => nextCard('right'));
+    bindOr('btn-flip', flip);
+    bindOr('btn-next', () => nextCard());
+  }
+
+  function renderEnd() {
+    const total = state.queue.length;
+    const wrong = state.wrongThisRound.length;
+    const right = total - wrong;
+    const timeMs = state.endedAt - state.startedAt;
+    const perCardSec = (timeMs / total) / 1000;
+    const accuracy = Math.round((right / total) * 100);
+    const isFollowupRound = state.round > 1;
+
+    // 완주 (0 wrong on any round > 1, or 0 wrong on round 1)
+    // Route to celebration screen when a review round clears all misses.
+    if (wrong === 0 && isFollowupRound) {
+      renderCelebration();
+      return;
+    }
+
+    // Build review tiles (each wrong card as a mini-tile with its answer)
+    const wrongTiles = state.wrongThisRound.map(id => {
+      const info = cardInfo(id);
+      const isWord = info.type === 'word';
+      const meaningLine = isWord ? `<span class="rt-meaning">${info.meaning}</span>` : `<span class="rt-meaning">${info.name}</span>`;
+      return `
+        <div class="review-tile">
+          <span class="rt-char korean">${info.char}</span>
+          <span class="rt-sound">${info.sound}</span>
+          ${meaningLine}
+        </div>`;
+    }).join('');
+
+    // Headline adapts to round & wrong count
+    const headline = wrong === 0
+      ? '완벽했어요.'
+      : (wrong <= 3 ? '거의 다 왔어요.' : (isFollowupRound ? '조금 더 반복해요.' : '좋아요. 반복이 더 필요해요.'));
+
+    const savedTotal = currentSavedWrong().length;
+
+    main.innerHTML = `
+      <div class="screen">
+        ${isFollowupRound ? `<span class="round-badge">Round ${state.round} · 재훈련</span>` : ''}
+        <h1>${headline}</h1>
+        <p>${state.mode === 'diagnostic' && !isFollowupRound
+          ? '이 숫자를 기록지에 옮겨두세요. 다음 주 같은 숫자와 나란히 놓으면 성장이 눈에 보입니다.'
+          : (isFollowupRound
+              ? '틀린 카드만 다시 돌렸습니다. 아직 놓친 게 있으면 한 번 더 리뷰 후 재훈련하세요.'
+              : '한 세트 완료.')}</p>
+        <div class="result-grid">
+          <div class="result-cell">
+            <span class="label">총 시간</span>
+            <span class="value mono">${formatTime(timeMs)}</span>
+          </div>
+          <div class="result-cell">
+            <span class="label">카드당</span>
+            <span class="value mono">${perCardSec.toFixed(2).replace(/\.?0+$/, '')}<span style="font-size:14px;color:var(--muted);margin-left:2px">초</span></span>
+          </div>
+          <div class="result-cell">
+            <span class="label">정확도</span>
+            <span class="value mono">${accuracy}<span style="font-size:16px;color:var(--muted)">%</span></span>
+          </div>
+          <div class="result-cell">
+            <span class="label">틀림</span>
+            <span class="value mono" style="color:${wrong ? 'var(--wrong)' : 'inherit'}">${wrong}<span style="font-size:14px;color:var(--muted);margin-left:4px">/ ${total}</span></span>
+          </div>
+        </div>
+        ${wrong > 0 ? `
+          <div class="review-block">
+            <h3>먼저 리뷰 · 놓친 ${wrong}장</h3>
+            <p class="review-sub">각 카드의 정답을 눈으로 확인한 뒤, 아래 버튼을 누르면 이 ${wrong}장만 다시 도전합니다. 약점은 자동 저장됨.</p>
+            <div class="review-grid">${wrongTiles}</div>
+          </div>` : ''}
+        <div class="screen-actions">
+          ${wrong > 0
+            ? `<button class="btn" id="review-drill-btn">리뷰 완료 → 이 ${wrong}장 다시 도전 <span class="kbd">Space</span></button>`
+            : `<button class="btn" id="again-btn">전체 다시 하기 <span class="kbd">Space</span></button>`}
+          ${wrong > 0 ? `<button class="btn ghost" id="again-btn">전체 다시 하기</button>` : ''}
+          ${savedTotal > 0 ? `<button class="btn ghost" id="clear-wrong-btn">약점 초기화</button>` : ''}
+          <button class="btn ghost" id="home-btn">← 처음으로</button>
+        </div>
+      </div>
+    `;
+    const bindOr = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+    bindOr('review-drill-btn', () => startReviewRound());
+    bindOr('again-btn', () => { newSession(); startSession(); });
+    bindOr('clear-wrong-btn', () => {
+      if (confirm('저장된 약점을 모두 지울까요?')) clearSavedWrong();
+    });
+    bindOr('home-btn', () => newSession());
+  }
+
+  function renderCelebration() {
+    const totalRounds = state.roundHistory.length;
+    const totalTime = state.roundHistory.reduce((s, r) => s + r.timeMs, 0);
+    const originalSize = state.originalQueue.length;
+
+    const rows = state.roundHistory.map((r, i) => {
+      const cleared = r.wrong === 0;
+      return `
+        <div class="round-row ${cleared ? 'cleared' : ''}">
+          <span class="r-num">R${r.round}</span>
+          <span class="r-detail">${r.size}장 · ${formatTime(r.timeMs)}</span>
+          <span class="r-wrong">놓침 <strong>${r.wrong}</strong></span>
+        </div>`;
+    }).join('');
+
+    main.innerHTML = `
+      <div class="screen">
+        <h1>완주 🎉</h1>
+        <p>${originalSize}장 전체를 ${totalRounds}라운드에 걸쳐 다 잡았어요. 총 ${formatTime(totalTime)}.</p>
+        <div class="round-history">
+          <h3>라운드 히스토리</h3>
+          ${rows}
+        </div>
+        <div class="screen-actions">
+          <button class="btn" id="home-btn">← 처음으로 <span class="kbd">Space</span></button>
+          <button class="btn ghost" id="again-btn">같은 덱 다시 도전</button>
+          ${currentSavedWrong().length > 0 ? `<button class="btn ghost" id="clear-wrong-btn">약점 초기화</button>` : ''}
+        </div>
+      </div>
+    `;
+    document.getElementById('home-btn').onclick = () => newSession();
+    document.getElementById('again-btn').onclick = () => { newSession(); startSession(); };
+    const clear = document.getElementById('clear-wrong-btn');
+    if (clear) clear.onclick = () => {
+      if (confirm('저장된 약점을 모두 지울까요?')) clearSavedWrong();
+    };
+  }
+
+  // Deck definitions per set. Order = display order.
+  const DECK_OPTIONS = {
+    jamo: [
+      {key:'all',       label:'전체 40'},
+      {key:'consonant', label:'자음 19'},
+      {key:'vowel',     label:'모음 21'},
+      {key:'basic',     label:'기본 19'},
+      {key:'hard',      label:'격음·경음 10'},
+      {key:'complex',   label:'복모음 11'},
+    ],
+    word: [
+      {key:'all',    label:'전체 100'},
+      {key:'noun',   label:'명사 30'},
+      {key:'people', label:'사람 10'},
+      {key:'food',   label:'음식 15'},
+      {key:'verb',   label:'동사 15'},
+      {key:'adj',    label:'형용사 10'},
+      {key:'time',   label:'시간·숫자 10'},
+      {key:'place',  label:'장소 10'},
+    ],
+  };
+
+  function renderDeckChips() {
+    const container = document.getElementById('deck-chips');
+    const opts = DECK_OPTIONS[state.set];
+    const savedCount = currentSavedWrong().length;
+    container.innerHTML = opts.map(o =>
+      `<button class="chip${o.key === state.deck ? ' active' : ''}" data-deck="${o.key}">${o.label}</button>`
+    ).join('') +
+      `<button class="chip${state.deck === 'saved' ? ' active' : ''}" data-deck="saved" id="chip-saved"${savedCount === 0 ? ' disabled' : ''}>${savedCount ? `약점 · ${savedCount}` : '약점'}</button>`;
+    container.querySelectorAll('.chip').forEach(btn => {
+      btn.onclick = () => {
+        if (btn.disabled) return;
+        state.deck = btn.dataset.deck;
+        renderDeckChips();
+        newSession();
+      };
+    });
+  }
+
+  function updateActiveChip() {
+    // Deck chip active state
+    renderDeckChips();
+    // Set chip active state
+    document.querySelectorAll('.set-chip').forEach(el => {
+      el.classList.toggle('active', el.dataset.set === state.set);
+    });
+  }
+
+  // ================================================================
+  // Wiring
+  // ================================================================
+  document.querySelectorAll('.segmented button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.segmented button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+      newSession();
+    };
+  });
+  document.querySelectorAll('.set-chip').forEach(btn => {
+    btn.onclick = () => {
+      state.set = btn.dataset.set;
+      state.deck = 'all';  // reset deck when switching set
+      updateActiveChip();
+      newSession();
+    };
+  });
+  document.getElementById('restart').onclick = () => newSession();
+  document.getElementById('header-help').onclick = showHelp;
+
+  // Theme toggle
+  document.getElementById('theme-toggle').onclick = () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  };
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const modal = document.getElementById('modal-backdrop');
+    if (modal) {
+      if (e.key === 'Escape') { modal.remove(); e.preventDefault(); }
+      return;
+    }
+    if (e.key === ' ') {
+      e.preventDefault();
+      if (state.index === -1) startSession();
+      else if (state.index >= state.queue.length) {
+        // End or celebration screen: trigger the primary CTA if present, else start fresh
+        const reviewBtn = document.getElementById('review-drill-btn');
+        const homeBtn = document.getElementById('home-btn');
+        const againBtn = document.getElementById('again-btn');
+        if (reviewBtn) reviewBtn.click();
+        else if (homeBtn && state.wrongThisRound.length === 0 && state.round > 1) homeBtn.click();
+        else if (againBtn) againBtn.click();
+        else { newSession(); startSession(); }
+      }
+      else if (state.mode === 'study') nextCard();
+      else flip();
+    } else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      flip();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (state.index >= 0 && state.index < state.queue.length && state.mode !== 'study') nextCard('wrong');
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (state.index >= 0 && state.index < state.queue.length) {
+        if (state.mode === 'study') nextCard();
+        else nextCard('right');
+      }
+    } else if (e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      newSession();
+    }
+  });
+
+  // First paint
+  renderDeckChips();
+  newSession();
+</script>
+</body>
+</html>
