@@ -80,8 +80,10 @@
   }
   .brand {
     display: inline-flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 2px;
     background: transparent;
     border: none;
     padding: 4px 8px;
@@ -95,21 +97,26 @@
   .brand:hover { background: var(--card-bg); }
   .brand:hover .brand-title { color: var(--accent); }
   .brand-title {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     letter-spacing: -0.005em;
     color: var(--ink);
+    line-height: 1.2;
     transition: color 0.15s;
   }
-  .tagline {
-    font-size: 13px;
+  .brand-subtitle {
+    font-size: 12px;
     color: var(--muted);
     font-weight: 500;
     letter-spacing: 0.01em;
-    text-align: center;
-    flex: 1;
-    min-width: 0;
-    padding: 0 16px;
+    line-height: 1.2;
+  }
+  .header-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .segmented {
@@ -797,36 +804,110 @@
     width: 100%;
   }
 
-  /* Jin intro card at top of landing */
-  .jin-intro {
+  /* Landing intro row: Jin photo with speech bubble + controls box side-by-side */
+  .jin-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .jin-photo-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
-    padding: 4px 0 0;
+    gap: 0;
+    flex: 0 0 auto;
   }
   .jin-photo {
-    width: 180px;
+    width: 220px;
     height: auto;
-    max-height: 200px;
+    max-height: 260px;
     object-fit: contain;
     filter: drop-shadow(0 10px 24px rgba(31,27,22,0.18));
     user-select: none;
     -webkit-user-drag: none;
   }
-  .jin-greeting {
-    font-size: 15px;
-    color: var(--muted);
+
+  /* Speech bubble above Jin photo */
+  .speech-bubble {
+    position: relative;
+    background: #FFFFFF;
+    color: #1F1B16;
+    padding: 12px 20px;
+    border-radius: 22px;
+    box-shadow: 0 6px 20px rgba(31,27,22,0.10);
+    border: 1px solid rgba(31,27,22,0.06);
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: 260px;
     text-align: center;
-    max-width: 36ch;
-    margin: 0;
-    line-height: 1.5;
+    margin-bottom: -6px;
+    z-index: 2;
+  }
+  .speech-bubble strong { color: var(--accent); font-weight: 600; }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 14px solid #FFFFFF;
+    filter: drop-shadow(0 3px 2px rgba(31,27,22,0.08));
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .speech-bubble { background: #F5EFE0; }
+    :root:not([data-theme="light"]) .speech-bubble::after { border-top-color: #F5EFE0; }
+  }
+  :root[data-theme="dark"] .speech-bubble { background: #F5EFE0; }
+  :root[data-theme="dark"] .speech-bubble::after { border-top-color: #F5EFE0; }
+
+  /* Controls box next to Jin */
+  .controls-box {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    padding: 22px 24px;
+    flex: 1;
+    min-width: 0;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 6px 20px -8px rgba(31,27,22,0.10);
+  }
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .control-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
     font-weight: 500;
   }
-  .jin-greeting strong { color: var(--ink); font-weight: 600; }
-  @media (max-width: 720px) {
-    .jin-photo { width: 140px; max-height: 170px; }
-    .jin-greeting { font-size: 14px; }
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  @media (max-width: 780px) {
+    .jin-controls-row {
+      flex-direction: column;
+      gap: 20px;
+    }
+    .controls-box { width: 100%; max-width: 100%; padding: 18px 20px; }
+    .jin-photo { width: 180px; max-height: 220px; }
+    .speech-bubble { font-size: 14px; max-width: 240px; padding: 10px 18px; }
   }
   .landing-hero { display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .landing-mark {
@@ -1128,34 +1209,15 @@
 <header>
   <button type="button" class="brand" id="brand-home" aria-label="Home">
     <span class="brand-title" data-i18n="brand_title">Jin's 4주 부트캠프</span>
+    <span class="brand-subtitle" data-i18n="tagline">4주 뒤엔 한국어를 읽고 씁니다</span>
   </button>
-  <div class="tagline" data-i18n="tagline">4주 뒤엔 한국어를 읽고 씁니다</div>
-  <div class="stats" id="stats" aria-live="polite">
-    <div class="stat"><span class="stat-label" data-i18n="stat_progress">진행</span><span class="stat-value mono" id="progress">0 / 0</span></div>
-    <div class="stat"><span class="stat-label" data-i18n="stat_time">시간</span><span class="stat-value mono" id="timer">0:00</span></div>
-    <div class="stat"><span class="stat-label" data-i18n="stat_wrong">틀림</span><span class="stat-value mono" id="wrong-count">0</span></div>
-  </div>
-</header>
-
-<div class="toolbar">
-  <div class="deck-filter">
-    <label data-i18n="label_set">세트</label>
-    <div class="deck-chips" id="set-chips">
-      <button class="chip set-chip active" data-set="jamo" data-i18n="set_jamo">자모 40</button>
-      <button class="chip set-chip" data-set="word" data-i18n="set_word">단어 100</button>
-    </div>
-    <label style="margin-left:12px" data-i18n="label_deck">덱</label>
-    <div class="deck-chips" id="deck-chips">
-      <!-- populated by JS based on current set -->
-    </div>
-  </div>
-  <div class="toolbar-right">
+  <div class="header-actions">
     <button class="icon-btn" id="lang-toggle" title="Language" data-i18n="btn_lang">🌐 English</button>
     <button class="icon-btn" id="header-help" data-i18n="btn_help">? 사용법</button>
     <button class="icon-btn" id="theme-toggle" data-i18n="btn_theme">◐ 테마</button>
     <button class="icon-btn" id="restart" data-i18n="btn_restart">↻ 다시</button>
   </div>
-</div>
+</header>
 
 <main id="main"></main>
 
@@ -1400,7 +1462,7 @@
       landing_body_suffix: '아래에서 상황에 맞는 모드를 골라 시작하세요.',
       landing_deck_note: (deckLabel, size) => `현재 덱: <strong>${deckLabel}</strong> · <strong>${size}</strong>장 · 위 알약 버튼으로 바꿀 수 있어요.`,
       landing_help: '? 처음이라 어떻게 쓰는지 모르겠어요',
-      jin_greeting: '안녕, <strong>Jin</strong>이에요. 친구들 한국어 배우게 하려고 만들었어요.',
+      jin_greeting: '안녕, <strong>Jin</strong>이에요. 너의 한국어 연습을 도와줄게요.',
 
       // --- mode cards ---
       modecard_tag_tutor: '수업 중 · 강사가 조작',
@@ -1544,7 +1606,7 @@
       landing_body_suffix: 'Pick the mode below that fits your situation.',
       landing_deck_note: (deckLabel, size) => `Current deck: <strong>${deckLabel}</strong> · <strong>${size}</strong> cards · switch with the pill buttons above.`,
       landing_help: '? First time — how does this work?',
-      jin_greeting: `Hi, I'm <strong>Jin</strong>. I made this for my friends learning Korean.`,
+      jin_greeting: `Hi, I'm <strong>Jin</strong>. I'll help you practice Korean.`,
 
       // --- mode cards ---
       modecard_tag_tutor: 'In class · teacher taps',
@@ -1886,11 +1948,8 @@
   }
 
   function updateStats() {
-    const inRound = state.index >= 0 && state.index < state.queue.length;
-    const cardCount = state.queue.length || cardsFor(state.set, state.deck).length;
-    document.getElementById('progress').textContent =
-      inRound ? `${state.index + 1} / ${state.queue.length}` : t('unit_cards', cardCount);
-    document.getElementById('wrong-count').textContent = state.wrongThisRound.length;
+    // Header stats were removed; session modal renders its own stats inline.
+    // Only the shared timer needs updating.
     updateTimer();
   }
 
@@ -1903,21 +1962,29 @@
   }
 
   function renderStart() {
-    const deckSize = cardsFor(state.set, state.deck).length;
     const isJamo = state.set === 'jamo';
     const cta = t('modecard_cta');
 
     main.innerHTML = `
       <div class="landing">
-        <div class="jin-intro">
-          <img class="jin-photo" src="jin.png" alt="Jin" width="180">
-          <p class="jin-greeting">${t('jin_greeting')}</p>
-        </div>
-        <div class="landing-hero">
-          <span class="landing-mark korean">${isJamo ? '가' : '책'}</span>
-          <h1>${t(isJamo ? 'landing_title_jamo' : 'landing_title_word')}</h1>
-          <p>${t(isJamo ? 'landing_body_jamo' : 'landing_body_word')}<br>${t('landing_body_suffix')}</p>
-          <p class="landing-deck-note">${t('landing_deck_note', deckLabelFor(state.set, state.deck), deckSize)}</p>
+        <div class="jin-controls-row">
+          <div class="jin-photo-block">
+            <div class="speech-bubble">${t('jin_greeting')}</div>
+            <img class="jin-photo" src="jin.png" alt="Jin" width="220">
+          </div>
+          <div class="controls-box">
+            <div class="control-group">
+              <label class="control-label">${t('label_set')}</label>
+              <div id="set-chips" class="chip-group">
+                <button class="chip set-chip${state.set === 'jamo' ? ' active' : ''}" data-set="jamo">${t('set_jamo')}</button>
+                <button class="chip set-chip${state.set === 'word' ? ' active' : ''}" data-set="word">${t('set_word')}</button>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">${t('label_deck')}</label>
+              <div id="deck-chips" class="chip-group"></div>
+            </div>
+          </div>
         </div>
         <div class="mode-cards">
           <button class="mode-card" data-start-mode="diagnostic">
@@ -1945,6 +2012,17 @@
         <button id="show-help" class="text-link">${t('landing_help')}</button>
       </div>
     `;
+    // Wire set chips (moved into landing template)
+    document.querySelectorAll('#set-chips .set-chip').forEach(btn => {
+      btn.onclick = () => {
+        state.set = btn.dataset.set;
+        state.deck = 'all';
+        renderStart();  // re-render landing with new set
+      };
+    });
+    // Populate deck chips inside controls-box
+    renderDeckChips();
+    // Wire mode cards
     document.querySelectorAll('[data-start-mode]').forEach(btn => {
       btn.onclick = () => {
         state.mode = btn.dataset.startMode;
@@ -2292,6 +2370,7 @@
 
   function renderDeckChips() {
     const container = document.getElementById('deck-chips');
+    if (!container) return;  // only renders when landing is active
     const opts = DECK_OPTIONS[state.set];
     const savedCount = currentSavedWrong().length;
     container.innerHTML = opts.map(o =>
@@ -2303,15 +2382,14 @@
         if (btn.disabled) return;
         state.deck = btn.dataset.deck;
         renderDeckChips();
-        newSession();
       };
     });
   }
 
   function updateActiveChip() {
-    // Deck chip active state
+    // Deck chip active state (guarded — only re-renders if on landing)
     renderDeckChips();
-    // Set chip active state
+    // Set chip active state (only present on landing)
     document.querySelectorAll('.set-chip').forEach(el => {
       el.classList.toggle('active', el.dataset.set === state.set);
     });
@@ -2322,14 +2400,7 @@
   // ================================================================
   // Brand acts as Home link
   document.getElementById('brand-home').onclick = () => newSession();
-  document.querySelectorAll('.set-chip').forEach(btn => {
-    btn.onclick = () => {
-      state.set = btn.dataset.set;
-      state.deck = 'all';  // reset deck when switching set
-      updateActiveChip();
-      newSession();
-    };
-  });
+  // Note: set-chip wiring is done inside renderStart() now (chips are rendered there)
   document.getElementById('restart').onclick = () => newSession();
   document.getElementById('header-help').onclick = showHelp;
 
@@ -2338,8 +2409,7 @@
     state.lang = state.lang === 'ko' ? 'en' : 'ko';
     saveLang(state.lang);
     applyStaticI18n();
-    renderDeckChips();
-    render();
+    render();  // will re-render landing (with chips) or card/end/celebration
     // Close help modal if open — content is stale
     document.getElementById('modal-backdrop')?.remove();
   };
@@ -2394,7 +2464,6 @@
 
   // First paint
   applyStaticI18n();
-  renderDeckChips();
   newSession();
 </script>
 </body>
