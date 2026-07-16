@@ -826,36 +826,37 @@
 <header>
   <div class="brand">
     <span class="brand-mark korean">가</span>
-    <span class="brand-title">자모 플래시카드 · Week 1</span>
+    <span class="brand-title" data-i18n="brand_title">자모 플래시카드 · Week 1</span>
   </div>
-  <div class="segmented" role="tablist" aria-label="모드">
-    <button class="active" data-mode="diagnostic" role="tab">진단</button>
-    <button data-mode="study" role="tab">연습</button>
-    <button data-mode="reverse" role="tab">역방향</button>
+  <div class="segmented" role="tablist" aria-label="Mode">
+    <button class="active" data-mode="diagnostic" role="tab" data-i18n="mode_diagnostic">진단</button>
+    <button data-mode="study" role="tab" data-i18n="mode_study">연습</button>
+    <button data-mode="reverse" role="tab" data-i18n="mode_reverse">역방향</button>
   </div>
   <div class="stats" id="stats" aria-live="polite">
-    <div class="stat"><span class="stat-label">진행</span><span class="stat-value mono" id="progress">0 / 0</span></div>
-    <div class="stat"><span class="stat-label">시간</span><span class="stat-value mono" id="timer">0:00</span></div>
-    <div class="stat"><span class="stat-label">틀림</span><span class="stat-value mono" id="wrong-count">0</span></div>
+    <div class="stat"><span class="stat-label" data-i18n="stat_progress">진행</span><span class="stat-value mono" id="progress">0 / 0</span></div>
+    <div class="stat"><span class="stat-label" data-i18n="stat_time">시간</span><span class="stat-value mono" id="timer">0:00</span></div>
+    <div class="stat"><span class="stat-label" data-i18n="stat_wrong">틀림</span><span class="stat-value mono" id="wrong-count">0</span></div>
   </div>
 </header>
 
 <div class="toolbar">
   <div class="deck-filter">
-    <label>세트</label>
+    <label data-i18n="label_set">세트</label>
     <div class="deck-chips" id="set-chips">
-      <button class="chip set-chip active" data-set="jamo">자모 40</button>
-      <button class="chip set-chip" data-set="word">단어 100</button>
+      <button class="chip set-chip active" data-set="jamo" data-i18n="set_jamo">자모 40</button>
+      <button class="chip set-chip" data-set="word" data-i18n="set_word">단어 100</button>
     </div>
-    <label style="margin-left:12px">덱</label>
+    <label style="margin-left:12px" data-i18n="label_deck">덱</label>
     <div class="deck-chips" id="deck-chips">
       <!-- populated by JS based on current set -->
     </div>
   </div>
   <div class="toolbar-right">
-    <button class="icon-btn" id="header-help" title="사용법">? 사용법</button>
-    <button class="icon-btn" id="theme-toggle" title="테마 전환">◐ 테마</button>
-    <button class="icon-btn" id="restart">↻ 다시</button>
+    <button class="icon-btn" id="lang-toggle" title="Language" data-i18n="btn_lang">🌐 English</button>
+    <button class="icon-btn" id="header-help" data-i18n="btn_help">? 사용법</button>
+    <button class="icon-btn" id="theme-toggle" data-i18n="btn_theme">◐ 테마</button>
+    <button class="icon-btn" id="restart" data-i18n="btn_restart">↻ 다시</button>
   </div>
 </div>
 
@@ -863,13 +864,13 @@
 
 <footer>
   <div class="shortcuts">
-    <span class="shortcut"><kbd>Space</kbd> 다음·시작</span>
-    <span class="shortcut"><kbd>F</kbd> 뒤집기</span>
-    <span class="shortcut"><kbd>←</kbd> 틀림</span>
-    <span class="shortcut"><kbd>→</kbd> 맞음</span>
-    <span class="shortcut"><kbd>R</kbd> 다시</span>
+    <span class="shortcut"><kbd>Space</kbd> <span data-i18n="sc_space">다음·시작</span></span>
+    <span class="shortcut"><kbd>F</kbd> <span data-i18n="sc_f">뒤집기</span></span>
+    <span class="shortcut"><kbd>←</kbd> <span data-i18n="sc_left">틀림</span></span>
+    <span class="shortcut"><kbd>→</kbd> <span data-i18n="sc_right">맞음</span></span>
+    <span class="shortcut"><kbd>R</kbd> <span data-i18n="sc_r">다시</span></span>
   </div>
-  <div>4주 부트캠프 · Week 1 · 자모 40</div>
+  <div data-i18n="footer_meta">4주 부트캠프 · Week 1 · 자모 40</div>
 </footer>
 
 <script>
@@ -1045,11 +1046,336 @@
   const CARDS_BY_SET = { jamo: JAMO, word: WORDS };
 
   // ================================================================
+  // i18n
+  // ================================================================
+  const LOCALES = {
+    ko: {
+      // --- chrome (static HTML) ---
+      brand_title: '자모 플래시카드 · Week 1',
+      mode_diagnostic: '진단',
+      mode_study: '연습',
+      mode_reverse: '역방향',
+      stat_progress: '진행',
+      stat_time: '시간',
+      stat_wrong: '틀림',
+      label_set: '세트',
+      label_deck: '덱',
+      set_jamo: '자모 40',
+      set_word: '단어 100',
+      btn_help: '? 사용법',
+      btn_theme: '◐ 테마',
+      btn_restart: '↻ 다시',
+      btn_lang: '🌐 English',   // shows the OTHER language
+      // footer
+      sc_space: '다음·시작',
+      sc_f: '뒤집기',
+      sc_left: '틀림',
+      sc_right: '맞음',
+      sc_r: '다시',
+      footer_meta: '4주 부트캠프 · Week 1 · 자모 40',
+
+      // --- deck chips (per set) ---
+      deck_all_jamo: '전체 40',
+      deck_consonant: '자음 19',
+      deck_vowel: '모음 21',
+      deck_basic: '기본 19',
+      deck_hard: '격음·경음 10',
+      deck_complex: '복모음 11',
+      deck_all_word: '전체 100',
+      deck_noun: '명사 30',
+      deck_people: '사람 10',
+      deck_food: '음식 15',
+      deck_verb: '동사 15',
+      deck_adj: '형용사 10',
+      deck_time: '시간·숫자 10',
+      deck_place: '장소 10',
+      deck_saved: (n) => n ? `약점 · ${n}` : '약점',
+
+      // --- stats units ---
+      unit_cards: (n) => `${n} 장`,
+
+      // --- landing ---
+      landing_title_jamo: '자모 40 · 플래시카드',
+      landing_title_word: '기초 단어 100 · 플래시카드',
+      landing_body_jamo: '한글 자·모 40개를 반사적으로 알아보는 힘을 기르는 도구예요.',
+      landing_body_word: '자·모를 익힌 뒤 바로 실전 단어로. 뜻은 몰라도 소리대로 읽어내는 훈련.',
+      landing_body_suffix: '아래에서 상황에 맞는 모드를 골라 시작하세요.',
+      landing_deck_note: (deckLabel, size) => `현재 덱: <strong>${deckLabel}</strong> · <strong>${size}</strong>장 · 위 알약 버튼으로 바꿀 수 있어요.`,
+      landing_help: '? 처음이라 어떻게 쓰는지 모르겠어요',
+
+      // --- mode cards ---
+      modecard_tag_tutor: '수업 중 · 강사가 조작',
+      modecard_tag_student: '숙제 · 학생이 조작',
+      modecard_tag_dictation: '받아쓰기 준비',
+      modecard_tag_vocab: '어휘 인출',
+      modecard_title_diagnostic: '학생 진단',
+      modecard_title_study: '혼자 연습',
+      modecard_title_reverse_jamo: '소리 → 자모',
+      modecard_title_reverse_word: '뜻 → 단어',
+      modecard_body_diagnostic_jamo: '시간을 재며 40장을 넘겨요. 학생이 읽으면 강사가 ✓ 또는 ✗ 클릭. 끝나면 정확도·틀린 카드 요약.',
+      modecard_body_diagnostic_word: '시간을 재며 단어를 넘겨요. 학생이 소리내어 읽으면 강사가 ✓/✗. 끝나면 정확도·틀린 단어 요약.',
+      modecard_body_study: '자기 페이스로. 카드를 탭하면 답이 보이고, 한 번 더 탭하면 다음 카드. 부담 없이 반복.',
+      modecard_body_reverse_jamo: '로마자·이름을 먼저 보고 자모를 떠올려요. 받아쓰기(귀→손) 반사 훈련.',
+      modecard_body_reverse_word: '영어 뜻을 보고 한국어 단어를 떠올려요. 어휘 인출 훈련.',
+      modecard_cta: '시작하기 →',
+
+      // --- card actions & hints ---
+      card_hint_tap_reveal: '탭하면 답이 보여요',
+      card_hint_tap_next: '다시 탭 → 다음 카드',
+      card_hint_answer_shown: '답 공개됨',
+      card_btn_wrong: '✗ 틀림',
+      card_btn_right: '✓ 맞음',
+      card_btn_show: '답 보기',
+      card_btn_hide: '답 숨기기',
+      card_btn_next: '다음',
+      card_btn_show_reverse: (setLabel) => `${setLabel} 보기`,
+      card_btn_hide_reverse: (setLabel) => `${setLabel} 숨기기`,
+      reveal_label_jamo: '자모',
+      reveal_label_word: '단어',
+
+      // --- end screen ---
+      end_headline_perfect: '완벽했어요.',
+      end_headline_almost: '거의 다 왔어요.',
+      end_headline_good: '좋아요. 반복이 더 필요해요.',
+      end_headline_more_rounds: '조금 더 반복해요.',
+      end_body_diagnostic: '이 숫자를 기록지에 옮겨두세요. 다음 주 같은 숫자와 나란히 놓으면 성장이 눈에 보입니다.',
+      end_body_review: '틀린 카드만 다시 돌렸습니다. 아직 놓친 게 있으면 한 번 더 리뷰 후 재훈련하세요.',
+      end_body_generic: '한 세트 완료.',
+      end_stat_total_time: '총 시간',
+      end_stat_per_card: '카드당',
+      end_stat_accuracy: '정확도',
+      end_stat_wrong: '틀림',
+      end_time_seconds: '초',
+      end_review_title: (n) => `먼저 리뷰 · 놓친 ${n}장`,
+      end_review_sub: (n) => `각 카드의 정답을 눈으로 확인한 뒤, 아래 버튼을 누르면 이 ${n}장만 다시 도전합니다. 약점은 자동 저장됨.`,
+      end_btn_review_drill: (n) => `리뷰 완료 → 이 ${n}장 다시 도전`,
+      end_btn_again: '전체 다시 하기',
+      end_btn_clear_weak: '약점 초기화',
+      end_btn_home: '← 처음으로',
+      end_round_badge: (n) => `Round ${n} · 재훈련`,
+
+      // --- celebration ---
+      celeb_headline: '완주 🎉',
+      celeb_body: (size, rounds, time) => `${size}장 전체를 ${rounds}라운드에 걸쳐 다 잡았어요. 총 ${time}.`,
+      celeb_history_title: '라운드 히스토리',
+      celeb_round_wrong_label: '놓침',
+      celeb_btn_home: '← 처음으로',
+      celeb_btn_again: '같은 덱 다시 도전',
+
+      // --- help modal ---
+      help_title: '사용법',
+      help_close_aria: '닫기',
+      help_p1: '4주 부트캠프 Week 1 도구. <strong>자모 40장</strong>(자음 19 + 모음 21)과 <strong>기초단어 100장</strong>을 반복 훈련합니다.',
+      help_h3_set: '세트 (위 첫 번째 알약 버튼)',
+      help_set_jamo: '<strong>자모 40</strong> — 한글 알파벳 인식 (Week 1 시작)',
+      help_set_word: '<strong>단어 100</strong> — 자모가 익숙해지면 바로 실전 단어 읽기로 (같은 주차 안에 이어서)',
+      help_h3_class: '수업에서 (강사가 씀)',
+      help_class_1: '<strong>학생 진단</strong> 모드를 골라요',
+      help_class_2: '학생 앞에 화면을 놓고 <strong>시작하기</strong>',
+      help_class_3: '학생이 소리내어 읽으면 강사가 <strong>✓ 맞음</strong> 또는 <strong>✗ 틀림</strong> 클릭',
+      help_class_4: '모르겠으면 <strong>답 보기</strong> 로 확인 후 판단',
+      help_class_5: '끝나면 <strong>리뷰 화면</strong> — 놓친 카드의 정답을 눈으로 확인 → <strong>이 N장 다시 도전</strong> 클릭',
+      help_class_6: '0장 놓칠 때까지 라운드가 반복돼요 → 완주 축하 화면',
+      help_class_7: '매주 이 숫자(총 시간·정확도)를 기록지에 적으세요',
+      help_h3_home: '집에서 (학생이 씀)',
+      help_home_1: '<strong>혼자 연습</strong> 모드 → 카드 탭하면 답이 나옵니다. 다시 탭하면 다음',
+      help_home_2: '받아쓰기 감각을 키우고 싶으면 <strong>소리→자모</strong> (또는 단어 세트에서 <strong>뜻→단어</strong>)',
+      help_home_3: '틀렸다고 표시한 카드는 자동으로 <strong>약점</strong> 덱에 쌓여요. 다음날 약점만 골라 다시 도세요',
+      help_h3_deck: '덱 (두 번째 알약 줄)',
+      help_deck_p: '전체가 부담이면 자음만·모음만·명사만·동사만 등으로 좁혀서 연습할 수 있어요.',
+      help_h3_shortcuts: '키보드 단축키',
+      help_sc_space: '다음 · 시작',
+      help_sc_f: '카드 뒤집기 (답 보기)',
+      help_sc_arrows: '틀림 · 맞음',
+      help_sc_r: '처음부터 다시',
+
+      // --- dialogs ---
+      confirm_clear_saved: '저장된 약점을 모두 지울까요?',
+    },
+
+    en: {
+      // --- chrome (static HTML) ---
+      brand_title: 'Hangul Flashcards · Week 1',
+      mode_diagnostic: 'Diagnostic',
+      mode_study: 'Study',
+      mode_reverse: 'Reverse',
+      stat_progress: 'Progress',
+      stat_time: 'Time',
+      stat_wrong: 'Missed',
+      label_set: 'Set',
+      label_deck: 'Deck',
+      set_jamo: 'Letters 40',
+      set_word: 'Words 100',
+      btn_help: '? Help',
+      btn_theme: '◐ Theme',
+      btn_restart: '↻ Restart',
+      btn_lang: '🌐 한국어',
+      sc_space: 'next · start',
+      sc_f: 'flip',
+      sc_left: 'wrong',
+      sc_right: 'right',
+      sc_r: 'restart',
+      footer_meta: '4-Week Bootcamp · Week 1 · Letters 40',
+
+      // --- deck chips ---
+      deck_all_jamo: 'All 40',
+      deck_consonant: 'Consonants 19',
+      deck_vowel: 'Vowels 21',
+      deck_basic: 'Basic 19',
+      deck_hard: 'Aspirated + Tense 10',
+      deck_complex: 'Complex vowels 11',
+      deck_all_word: 'All 100',
+      deck_noun: 'Nouns 30',
+      deck_people: 'People 10',
+      deck_food: 'Food 15',
+      deck_verb: 'Verbs 15',
+      deck_adj: 'Adjectives 10',
+      deck_time: 'Time · Numbers 10',
+      deck_place: 'Places 10',
+      deck_saved: (n) => n ? `Weak spots · ${n}` : 'Weak spots',
+
+      unit_cards: (n) => `${n} cards`,
+
+      // --- landing ---
+      landing_title_jamo: 'Korean Letters · Flashcards',
+      landing_title_word: 'Basic Words · Flashcards',
+      landing_body_jamo: 'Train your reflex to instantly recognize all 40 Korean letters (consonants + vowels).',
+      landing_body_word: 'Once the letters click, jump into real words. Just read them out loud — meaning can come later.',
+      landing_body_suffix: 'Pick the mode below that fits your situation.',
+      landing_deck_note: (deckLabel, size) => `Current deck: <strong>${deckLabel}</strong> · <strong>${size}</strong> cards · switch with the pill buttons above.`,
+      landing_help: '? First time — how does this work?',
+
+      // --- mode cards ---
+      modecard_tag_tutor: 'In class · teacher taps',
+      modecard_tag_student: 'Homework · student taps',
+      modecard_tag_dictation: 'Dictation warm-up',
+      modecard_tag_vocab: 'Vocab recall',
+      modecard_title_diagnostic: 'Diagnostic',
+      modecard_title_study: 'Solo Practice',
+      modecard_title_reverse_jamo: 'Sound → Letter',
+      modecard_title_reverse_word: 'Meaning → Word',
+      modecard_body_diagnostic_jamo: 'Timed run through the deck. Student reads each card aloud; teacher taps ✓ or ✗. Ends with accuracy and a list of misses.',
+      modecard_body_diagnostic_word: 'Timed run through the words. Student reads aloud; teacher marks ✓ / ✗. Ends with accuracy and a list of misses.',
+      modecard_body_study: 'At your own pace. Tap the card to reveal the answer, tap again for the next. Repeat without pressure.',
+      modecard_body_reverse_jamo: 'See the romanization first, then recall the letter. Trains the "hear it → write it" reflex you need for dictation.',
+      modecard_body_reverse_word: 'See the English meaning, then recall the Korean word. Vocabulary retrieval practice.',
+      modecard_cta: 'Start →',
+
+      // --- card ---
+      card_hint_tap_reveal: 'Tap to reveal',
+      card_hint_tap_next: 'Tap again for next card',
+      card_hint_answer_shown: 'Answer shown',
+      card_btn_wrong: '✗ Missed',
+      card_btn_right: '✓ Got it',
+      card_btn_show: 'Show answer',
+      card_btn_hide: 'Hide answer',
+      card_btn_next: 'Next',
+      card_btn_show_reverse: (setLabel) => `Show ${setLabel}`,
+      card_btn_hide_reverse: (setLabel) => `Hide ${setLabel}`,
+      reveal_label_jamo: 'letter',
+      reveal_label_word: 'word',
+
+      // --- end screen ---
+      end_headline_perfect: 'Clean run.',
+      end_headline_almost: 'Almost there.',
+      end_headline_good: 'Nice. A few more reps ahead.',
+      end_headline_more_rounds: 'One more pass.',
+      end_body_diagnostic: 'Write these numbers in your log. Next week, put them side by side and growth becomes visible.',
+      end_body_review: 'You drilled just the misses. If any are still off, review once more and drill again.',
+      end_body_generic: 'Set complete.',
+      end_stat_total_time: 'Total time',
+      end_stat_per_card: 'Per card',
+      end_stat_accuracy: 'Accuracy',
+      end_stat_wrong: 'Missed',
+      end_time_seconds: 's',
+      end_review_title: (n) => `Review first · ${n} missed`,
+      end_review_sub: (n) => `Look at the correct answer for each card, then hit the button to drill just these ${n}. Misses save to Weak spots automatically.`,
+      end_btn_review_drill: (n) => `Review done → drill these ${n}`,
+      end_btn_again: 'Restart whole deck',
+      end_btn_clear_weak: 'Clear weak spots',
+      end_btn_home: '← Home',
+      end_round_badge: (n) => `Round ${n} · retry`,
+
+      // --- celebration ---
+      celeb_headline: 'Cleared 🎉',
+      celeb_body: (size, rounds, time) => `${size} cards mastered across ${rounds} rounds. Total ${time}.`,
+      celeb_history_title: 'Round history',
+      celeb_round_wrong_label: 'missed',
+      celeb_btn_home: '← Home',
+      celeb_btn_again: 'Run the same deck again',
+
+      // --- help modal ---
+      help_title: 'How to use',
+      help_close_aria: 'Close',
+      help_p1: 'Week 1 tool of a 4-week bootcamp. Drill the <strong>40 Korean letters</strong> (19 consonants + 21 vowels) and <strong>100 basic words</strong>.',
+      help_h3_set: 'Set (top pill row)',
+      help_set_jamo: '<strong>Letters 40</strong> — recognize the Hangul alphabet (start of Week 1)',
+      help_set_word: '<strong>Words 100</strong> — once letters feel easy, jump to real word reading (same week)',
+      help_h3_class: 'In class (teacher runs it)',
+      help_class_1: 'Pick <strong>Diagnostic</strong> mode',
+      help_class_2: 'Face the screen toward the student and hit <strong>Start</strong>',
+      help_class_3: 'Student reads aloud; teacher taps <strong>✓ Got it</strong> or <strong>✗ Missed</strong>',
+      help_class_4: 'Unsure? Tap <strong>Show answer</strong> to check',
+      help_class_5: 'At the end you get a <strong>Review screen</strong> — check the correct answers → hit <strong>drill these N</strong>',
+      help_class_6: 'Rounds repeat until 0 misses → celebration screen',
+      help_class_7: 'Write down the totals (time · accuracy) in your weekly log',
+      help_h3_home: 'At home (student uses it)',
+      help_home_1: '<strong>Solo Practice</strong> mode → tap the card, see the answer, tap again for next',
+      help_home_2: 'To train your dictation reflex, use <strong>Sound → Letter</strong> (or <strong>Meaning → Word</strong> in the word set)',
+      help_home_3: 'Missed cards automatically pile up in the <strong>Weak spots</strong> deck — drill just those the next day',
+      help_h3_deck: 'Deck (second pill row)',
+      help_deck_p: 'If the whole set feels heavy, narrow to consonants-only, verbs-only, etc.',
+      help_h3_shortcuts: 'Keyboard shortcuts',
+      help_sc_space: 'next · start',
+      help_sc_f: 'flip card (show answer)',
+      help_sc_arrows: 'wrong · right',
+      help_sc_r: 'restart from scratch',
+
+      // --- dialogs ---
+      confirm_clear_saved: 'Clear all saved weak spots?',
+    },
+  };
+
+  const LANG_KEY = 'jamo-flashcards-lang-v1';
+  function loadLang() {
+    try {
+      const v = localStorage.getItem(LANG_KEY);
+      return (v === 'ko' || v === 'en') ? v : 'ko';
+    } catch { return 'ko'; }
+  }
+  function saveLang(lang) {
+    try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  }
+  function t(key, ...args) {
+    const val = LOCALES[state.lang]?.[key] ?? LOCALES.ko[key];
+    return typeof val === 'function' ? val(...args) : val;
+  }
+  function applyStaticI18n() {
+    document.title = t('brand_title');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+      // format: "attrName:key,attrName:key"
+      el.dataset.i18nAttr.split(',').forEach(pair => {
+        const [attr, key] = pair.split(':').map(s => s.trim());
+        el.setAttribute(attr, t(key));
+      });
+    });
+    // Language toggle button label shows the OTHER language
+    const langBtn = document.getElementById('lang-toggle');
+    if (langBtn) langBtn.textContent = t('btn_lang');
+    // Update html lang attribute
+    document.documentElement.setAttribute('lang', state.lang);
+  }
+
+  // ================================================================
   // State
   // ================================================================
   const STORAGE_KEY = 'jamo-flashcards-v1';
 
   const state = {
+    lang: loadLang(),             // 'ko' | 'en'
     set: 'jamo',                  // 'jamo' | 'word'
     mode: 'diagnostic',           // 'diagnostic' | 'study' | 'reverse'
     deck: 'all',
@@ -1255,67 +1581,58 @@
 
   function updateStats() {
     const inRound = state.index >= 0 && state.index < state.queue.length;
+    const cardCount = state.queue.length || cardsFor(state.set, state.deck).length;
     document.getElementById('progress').textContent =
-      inRound ? `${state.index + 1} / ${state.queue.length}` : `${state.queue.length ? state.queue.length : jamoFor(state.deck).length} 장`;
+      inRound ? `${state.index + 1} / ${state.queue.length}` : t('unit_cards', cardCount);
     document.getElementById('wrong-count').textContent = state.wrongThisRound.length;
     updateTimer();
   }
 
   function updateSavedChip() {
     const el = document.getElementById('chip-saved');
-    const count = state.savedWrong.length;
-    el.textContent = count ? `약점 · ${count}` : '약점';
+    if (!el) return;
+    const count = currentSavedWrong().length;
+    el.textContent = t('deck_saved', count);
     el.disabled = count === 0;
   }
 
   function renderStart() {
     const deckSize = cardsFor(state.set, state.deck).length;
-    const currentDeckOpt = (DECK_OPTIONS[state.set].find(o => o.key === state.deck)) || {label: '약점'};
     const isJamo = state.set === 'jamo';
-    const heroTitle = isJamo ? '자모 40 · 플래시카드' : '기초 단어 100 · 플래시카드';
-    const heroBody = isJamo
-      ? '한글 자·모 40개를 반사적으로 알아보는 힘을 기르는 도구예요.'
-      : '자·모를 익힌 뒤 바로 실전 단어로. 뜻은 몰라도 소리대로 읽어내는 훈련.';
-    const reverseTitle = isJamo ? '소리 → 자모' : '뜻 → 단어';
-    const reverseBody = isJamo
-      ? '로마자·이름을 먼저 보고 자모를 떠올려요. 받아쓰기(귀→손) 반사 훈련.'
-      : '영어 뜻을 보고 한국어 단어를 떠올려요. 어휘 인출 훈련.';
-    const diagnosticBody = isJamo
-      ? '시간을 재며 40장을 넘겨요. 학생이 읽으면 강사가 ✓ 또는 ✗ 클릭. 끝나면 정확도·틀린 카드 요약.'
-      : '시간을 재며 단어를 넘겨요. 학생이 소리내어 읽으면 강사가 ✓/✗. 끝나면 정확도·틀린 단어 요약.';
+    const cta = t('modecard_cta');
 
     main.innerHTML = `
       <div class="landing">
         <div class="landing-hero">
           <span class="landing-mark korean">${isJamo ? '가' : '책'}</span>
-          <h1>${heroTitle}</h1>
-          <p>${heroBody}<br>아래에서 상황에 맞는 모드를 골라 시작하세요.</p>
-          <p class="landing-deck-note">현재 덱: <strong>${currentDeckOpt.label}</strong> · <strong>${deckSize}</strong>장 · 위 알약 버튼으로 바꿀 수 있어요.</p>
+          <h1>${t(isJamo ? 'landing_title_jamo' : 'landing_title_word')}</h1>
+          <p>${t(isJamo ? 'landing_body_jamo' : 'landing_body_word')}<br>${t('landing_body_suffix')}</p>
+          <p class="landing-deck-note">${t('landing_deck_note', deckLabelFor(state.set, state.deck), deckSize)}</p>
         </div>
         <div class="mode-cards">
           <button class="mode-card" data-start-mode="diagnostic">
-            <div class="mode-card-tag">수업 중 · 강사가 조작</div>
+            <div class="mode-card-tag">${t('modecard_tag_tutor')}</div>
             <div class="mode-card-icon">⏱</div>
-            <h3>학생 진단</h3>
-            <p>${diagnosticBody}</p>
-            <div class="mode-card-cta">시작하기 →</div>
+            <h3>${t('modecard_title_diagnostic')}</h3>
+            <p>${t(isJamo ? 'modecard_body_diagnostic_jamo' : 'modecard_body_diagnostic_word')}</p>
+            <div class="mode-card-cta">${cta}</div>
           </button>
           <button class="mode-card" data-start-mode="study">
-            <div class="mode-card-tag">숙제 · 학생이 조작</div>
+            <div class="mode-card-tag">${t('modecard_tag_student')}</div>
             <div class="mode-card-icon">📖</div>
-            <h3>혼자 연습</h3>
-            <p>자기 페이스로. 카드를 탭하면 답이 보이고, 한 번 더 탭하면 다음 카드. 부담 없이 반복.</p>
-            <div class="mode-card-cta">시작하기 →</div>
+            <h3>${t('modecard_title_study')}</h3>
+            <p>${t('modecard_body_study')}</p>
+            <div class="mode-card-cta">${cta}</div>
           </button>
           <button class="mode-card" data-start-mode="reverse">
-            <div class="mode-card-tag">${isJamo ? '받아쓰기 준비' : '어휘 인출'}</div>
+            <div class="mode-card-tag">${t(isJamo ? 'modecard_tag_dictation' : 'modecard_tag_vocab')}</div>
             <div class="mode-card-icon">🔁</div>
-            <h3>${reverseTitle}</h3>
-            <p>${reverseBody}</p>
-            <div class="mode-card-cta">시작하기 →</div>
+            <h3>${t(isJamo ? 'modecard_title_reverse_jamo' : 'modecard_title_reverse_word')}</h3>
+            <p>${t(isJamo ? 'modecard_body_reverse_jamo' : 'modecard_body_reverse_word')}</p>
+            <div class="mode-card-cta">${cta}</div>
           </button>
         </div>
-        <button id="show-help" class="text-link">? 처음이라 어떻게 쓰는지 모르겠어요</button>
+        <button id="show-help" class="text-link">${t('landing_help')}</button>
       </div>
     `;
     document.querySelectorAll('[data-start-mode]').forEach(btn => {
@@ -1336,45 +1653,45 @@
       <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
         <div class="modal">
           <div class="modal-header">
-            <h2>사용법</h2>
-            <button class="modal-close" id="modal-close" aria-label="닫기">✕</button>
+            <h2>${t('help_title')}</h2>
+            <button class="modal-close" id="modal-close" aria-label="${t('help_close_aria')}">✕</button>
           </div>
 
-          <p>4주 부트캠프 Week 1 도구. <strong>자모 40장</strong>(자음 19 + 모음 21)과 <strong>기초단어 100장</strong>을 반복 훈련합니다.</p>
+          <p>${t('help_p1')}</p>
 
-          <h3>세트 (위 첫 번째 알약 버튼)</h3>
+          <h3>${t('help_h3_set')}</h3>
           <ul>
-            <li><strong>자모 40</strong> — 한글 알파벳 인식 (Week 1 시작)</li>
-            <li><strong>단어 100</strong> — 자모가 익숙해지면 바로 실전 단어 읽기로 (같은 주차 안에 이어서)</li>
+            <li>${t('help_set_jamo')}</li>
+            <li>${t('help_set_word')}</li>
           </ul>
 
-          <h3>수업에서 (강사가 씀)</h3>
+          <h3>${t('help_h3_class')}</h3>
           <ul>
-            <li><strong>학생 진단</strong> 모드를 골라요</li>
-            <li>학생 앞에 화면을 놓고 <strong>시작하기</strong></li>
-            <li>학생이 소리내어 읽으면 강사가 <strong>✓ 맞음</strong> 또는 <strong>✗ 틀림</strong> 클릭</li>
-            <li>모르겠으면 <strong>답 보기</strong> 로 확인 후 판단</li>
-            <li>끝나면 <strong>리뷰 화면</strong> — 놓친 카드의 정답을 눈으로 확인 → <strong>이 N장 다시 도전</strong> 클릭</li>
-            <li>0장 놓칠 때까지 라운드가 반복돼요 → 완주 축하 화면</li>
-            <li>매주 이 숫자(총 시간·정확도)를 기록지에 적으세요</li>
+            <li>${t('help_class_1')}</li>
+            <li>${t('help_class_2')}</li>
+            <li>${t('help_class_3')}</li>
+            <li>${t('help_class_4')}</li>
+            <li>${t('help_class_5')}</li>
+            <li>${t('help_class_6')}</li>
+            <li>${t('help_class_7')}</li>
           </ul>
 
-          <h3>집에서 (학생이 씀)</h3>
+          <h3>${t('help_h3_home')}</h3>
           <ul>
-            <li><strong>혼자 연습</strong> 모드 → 카드 탭하면 답이 나옵니다. 다시 탭하면 다음</li>
-            <li>받아쓰기 감각을 키우고 싶으면 <strong>소리→자모</strong> (또는 단어 세트에서 <strong>뜻→단어</strong>)</li>
-            <li>틀렸다고 표시한 카드는 자동으로 <strong>약점</strong> 덱에 쌓여요. 다음날 약점만 골라 다시 도세요</li>
+            <li>${t('help_home_1')}</li>
+            <li>${t('help_home_2')}</li>
+            <li>${t('help_home_3')}</li>
           </ul>
 
-          <h3>덱 (두 번째 알약 줄)</h3>
-          <p>전체가 부담이면 자음만·모음만·명사만·동사만 등으로 좁혀서 연습할 수 있어요.</p>
+          <h3>${t('help_h3_deck')}</h3>
+          <p>${t('help_deck_p')}</p>
 
-          <h3>키보드 단축키</h3>
+          <h3>${t('help_h3_shortcuts')}</h3>
           <ul>
-            <li><span class="kbd-inline">Space</span> 다음 · 시작</li>
-            <li><span class="kbd-inline">F</span> 카드 뒤집기 (답 보기)</li>
-            <li><span class="kbd-inline">←</span> 틀림 · <span class="kbd-inline">→</span> 맞음</li>
-            <li><span class="kbd-inline">R</span> 처음부터 다시</li>
+            <li><span class="kbd-inline">Space</span> ${t('help_sc_space')}</li>
+            <li><span class="kbd-inline">F</span> ${t('help_sc_f')}</li>
+            <li><span class="kbd-inline">←</span> · <span class="kbd-inline">→</span> ${t('help_sc_arrows')}</li>
+            <li><span class="kbd-inline">R</span> ${t('help_sc_r')}</li>
           </ul>
         </div>
       </div>
@@ -1436,27 +1753,27 @@
 
     const showReveal = state.revealed;
     const hint = state.mode === 'study'
-      ? (state.revealed ? '다시 탭 → 다음 카드' : '탭하면 답이 보여요')
-      : (state.revealed ? '답 공개됨' : '탭하면 답이 보여요');
+      ? (state.revealed ? t('card_hint_tap_next') : t('card_hint_tap_reveal'))
+      : (state.revealed ? t('card_hint_answer_shown') : t('card_hint_tap_reveal'));
 
     let actions = '';
     if (state.mode === 'diagnostic') {
       actions = `
-        <button class="btn wrong" id="btn-wrong">✗ 틀림 <span class="kbd">←</span></button>
-        <button class="btn ghost" id="btn-flip">${state.revealed ? '답 숨기기' : '답 보기'} <span class="kbd">F</span></button>
-        <button class="btn correct" id="btn-right">✓ 맞음 <span class="kbd">→</span></button>
+        <button class="btn wrong" id="btn-wrong">${t('card_btn_wrong')} <span class="kbd">←</span></button>
+        <button class="btn ghost" id="btn-flip">${state.revealed ? t('card_btn_hide') : t('card_btn_show')} <span class="kbd">F</span></button>
+        <button class="btn correct" id="btn-right">${t('card_btn_right')} <span class="kbd">→</span></button>
       `;
     } else if (state.mode === 'study') {
       actions = `
-        <button class="btn ghost" id="btn-flip">${state.revealed ? '답 숨기기' : '답 보기'} <span class="kbd">F</span></button>
-        <button class="btn" id="btn-next">다음 <span class="kbd">Space</span></button>
+        <button class="btn ghost" id="btn-flip">${state.revealed ? t('card_btn_hide') : t('card_btn_show')} <span class="kbd">F</span></button>
+        <button class="btn" id="btn-next">${t('card_btn_next')} <span class="kbd">Space</span></button>
       `;
     } else {
-      const revealLabel = state.set === 'word' ? '단어' : '자모';
+      const revealLabel = t(state.set === 'word' ? 'reveal_label_word' : 'reveal_label_jamo');
       actions = `
-        <button class="btn wrong" id="btn-wrong">✗ 틀림 <span class="kbd">←</span></button>
-        <button class="btn ghost" id="btn-flip">${state.revealed ? `${revealLabel} 숨기기` : `${revealLabel} 보기`} <span class="kbd">F</span></button>
-        <button class="btn correct" id="btn-right">✓ 맞음 <span class="kbd">→</span></button>
+        <button class="btn wrong" id="btn-wrong">${t('card_btn_wrong')} <span class="kbd">←</span></button>
+        <button class="btn ghost" id="btn-flip">${state.revealed ? t('card_btn_hide_reverse', revealLabel) : t('card_btn_show_reverse', revealLabel)} <span class="kbd">F</span></button>
+        <button class="btn correct" id="btn-right">${t('card_btn_right')} <span class="kbd">→</span></button>
       `;
     }
 
@@ -1519,51 +1836,50 @@
 
     // Headline adapts to round & wrong count
     const headline = wrong === 0
-      ? '완벽했어요.'
-      : (wrong <= 3 ? '거의 다 왔어요.' : (isFollowupRound ? '조금 더 반복해요.' : '좋아요. 반복이 더 필요해요.'));
+      ? t('end_headline_perfect')
+      : (wrong <= 3 ? t('end_headline_almost') : (isFollowupRound ? t('end_headline_more_rounds') : t('end_headline_good')));
+    const bodyText = state.mode === 'diagnostic' && !isFollowupRound
+      ? t('end_body_diagnostic')
+      : (isFollowupRound ? t('end_body_review') : t('end_body_generic'));
 
     const savedTotal = currentSavedWrong().length;
 
     main.innerHTML = `
       <div class="screen">
-        ${isFollowupRound ? `<span class="round-badge">Round ${state.round} · 재훈련</span>` : ''}
+        ${isFollowupRound ? `<span class="round-badge">${t('end_round_badge', state.round)}</span>` : ''}
         <h1>${headline}</h1>
-        <p>${state.mode === 'diagnostic' && !isFollowupRound
-          ? '이 숫자를 기록지에 옮겨두세요. 다음 주 같은 숫자와 나란히 놓으면 성장이 눈에 보입니다.'
-          : (isFollowupRound
-              ? '틀린 카드만 다시 돌렸습니다. 아직 놓친 게 있으면 한 번 더 리뷰 후 재훈련하세요.'
-              : '한 세트 완료.')}</p>
+        <p>${bodyText}</p>
         <div class="result-grid">
           <div class="result-cell">
-            <span class="label">총 시간</span>
+            <span class="label">${t('end_stat_total_time')}</span>
             <span class="value mono">${formatTime(timeMs)}</span>
           </div>
           <div class="result-cell">
-            <span class="label">카드당</span>
-            <span class="value mono">${perCardSec.toFixed(2).replace(/\.?0+$/, '')}<span style="font-size:14px;color:var(--muted);margin-left:2px">초</span></span>
+            <span class="label">${t('end_stat_per_card')}</span>
+            <span class="value mono">${perCardSec.toFixed(2).replace(/\.?0+$/, '')}<span style="font-size:14px;color:var(--muted);margin-left:2px">${t('end_time_seconds')}</span></span>
           </div>
           <div class="result-cell">
-            <span class="label">정확도</span>
+            <span class="label">${t('end_stat_accuracy')}</span>
             <span class="value mono">${accuracy}<span style="font-size:16px;color:var(--muted)">%</span></span>
           </div>
           <div class="result-cell">
-            <span class="label">틀림</span>
+            <span class="label">${t('end_stat_wrong')}</span>
             <span class="value mono" style="color:${wrong ? 'var(--wrong)' : 'inherit'}">${wrong}<span style="font-size:14px;color:var(--muted);margin-left:4px">/ ${total}</span></span>
           </div>
         </div>
         ${wrong > 0 ? `
           <div class="review-block">
-            <h3>먼저 리뷰 · 놓친 ${wrong}장</h3>
-            <p class="review-sub">각 카드의 정답을 눈으로 확인한 뒤, 아래 버튼을 누르면 이 ${wrong}장만 다시 도전합니다. 약점은 자동 저장됨.</p>
+            <h3>${t('end_review_title', wrong)}</h3>
+            <p class="review-sub">${t('end_review_sub', wrong)}</p>
             <div class="review-grid">${wrongTiles}</div>
           </div>` : ''}
         <div class="screen-actions">
           ${wrong > 0
-            ? `<button class="btn" id="review-drill-btn">리뷰 완료 → 이 ${wrong}장 다시 도전 <span class="kbd">Space</span></button>`
-            : `<button class="btn" id="again-btn">전체 다시 하기 <span class="kbd">Space</span></button>`}
-          ${wrong > 0 ? `<button class="btn ghost" id="again-btn">전체 다시 하기</button>` : ''}
-          ${savedTotal > 0 ? `<button class="btn ghost" id="clear-wrong-btn">약점 초기화</button>` : ''}
-          <button class="btn ghost" id="home-btn">← 처음으로</button>
+            ? `<button class="btn" id="review-drill-btn">${t('end_btn_review_drill', wrong)} <span class="kbd">Space</span></button>`
+            : `<button class="btn" id="again-btn">${t('end_btn_again')} <span class="kbd">Space</span></button>`}
+          ${wrong > 0 ? `<button class="btn ghost" id="again-btn">${t('end_btn_again')}</button>` : ''}
+          ${savedTotal > 0 ? `<button class="btn ghost" id="clear-wrong-btn">${t('end_btn_clear_weak')}</button>` : ''}
+          <button class="btn ghost" id="home-btn">${t('end_btn_home')}</button>
         </div>
       </div>
     `;
@@ -1571,7 +1887,7 @@
     bindOr('review-drill-btn', () => startReviewRound());
     bindOr('again-btn', () => { newSession(); startSession(); });
     bindOr('clear-wrong-btn', () => {
-      if (confirm('저장된 약점을 모두 지울까요?')) clearSavedWrong();
+      if (confirm(t('confirm_clear_saved'))) clearSavedWrong();
     });
     bindOr('home-btn', () => newSession());
   }
@@ -1580,29 +1896,30 @@
     const totalRounds = state.roundHistory.length;
     const totalTime = state.roundHistory.reduce((s, r) => s + r.timeMs, 0);
     const originalSize = state.originalQueue.length;
+    const unitCardsWord = t('unit_cards', 0).replace(/^\d+\s*/, '').trim(); // "장" or "cards"
 
-    const rows = state.roundHistory.map((r, i) => {
+    const rows = state.roundHistory.map(r => {
       const cleared = r.wrong === 0;
       return `
         <div class="round-row ${cleared ? 'cleared' : ''}">
           <span class="r-num">R${r.round}</span>
-          <span class="r-detail">${r.size}장 · ${formatTime(r.timeMs)}</span>
-          <span class="r-wrong">놓침 <strong>${r.wrong}</strong></span>
+          <span class="r-detail">${r.size} ${unitCardsWord} · ${formatTime(r.timeMs)}</span>
+          <span class="r-wrong">${t('celeb_round_wrong_label')} <strong>${r.wrong}</strong></span>
         </div>`;
     }).join('');
 
     main.innerHTML = `
       <div class="screen">
-        <h1>완주 🎉</h1>
-        <p>${originalSize}장 전체를 ${totalRounds}라운드에 걸쳐 다 잡았어요. 총 ${formatTime(totalTime)}.</p>
+        <h1>${t('celeb_headline')}</h1>
+        <p>${t('celeb_body', originalSize, totalRounds, formatTime(totalTime))}</p>
         <div class="round-history">
-          <h3>라운드 히스토리</h3>
+          <h3>${t('celeb_history_title')}</h3>
           ${rows}
         </div>
         <div class="screen-actions">
-          <button class="btn" id="home-btn">← 처음으로 <span class="kbd">Space</span></button>
-          <button class="btn ghost" id="again-btn">같은 덱 다시 도전</button>
-          ${currentSavedWrong().length > 0 ? `<button class="btn ghost" id="clear-wrong-btn">약점 초기화</button>` : ''}
+          <button class="btn" id="home-btn">${t('celeb_btn_home')} <span class="kbd">Space</span></button>
+          <button class="btn ghost" id="again-btn">${t('celeb_btn_again')}</button>
+          ${currentSavedWrong().length > 0 ? `<button class="btn ghost" id="clear-wrong-btn">${t('end_btn_clear_weak')}</button>` : ''}
         </div>
       </div>
     `;
@@ -1610,40 +1927,46 @@
     document.getElementById('again-btn').onclick = () => { newSession(); startSession(); };
     const clear = document.getElementById('clear-wrong-btn');
     if (clear) clear.onclick = () => {
-      if (confirm('저장된 약점을 모두 지울까요?')) clearSavedWrong();
+      if (confirm(t('confirm_clear_saved'))) clearSavedWrong();
     };
   }
 
-  // Deck definitions per set. Order = display order.
+  // Deck definitions per set — key + i18n token for label
   const DECK_OPTIONS = {
     jamo: [
-      {key:'all',       label:'전체 40'},
-      {key:'consonant', label:'자음 19'},
-      {key:'vowel',     label:'모음 21'},
-      {key:'basic',     label:'기본 19'},
-      {key:'hard',      label:'격음·경음 10'},
-      {key:'complex',   label:'복모음 11'},
+      {key:'all',       i18n:'deck_all_jamo'},
+      {key:'consonant', i18n:'deck_consonant'},
+      {key:'vowel',     i18n:'deck_vowel'},
+      {key:'basic',     i18n:'deck_basic'},
+      {key:'hard',      i18n:'deck_hard'},
+      {key:'complex',   i18n:'deck_complex'},
     ],
     word: [
-      {key:'all',    label:'전체 100'},
-      {key:'noun',   label:'명사 30'},
-      {key:'people', label:'사람 10'},
-      {key:'food',   label:'음식 15'},
-      {key:'verb',   label:'동사 15'},
-      {key:'adj',    label:'형용사 10'},
-      {key:'time',   label:'시간·숫자 10'},
-      {key:'place',  label:'장소 10'},
+      {key:'all',    i18n:'deck_all_word'},
+      {key:'noun',   i18n:'deck_noun'},
+      {key:'people', i18n:'deck_people'},
+      {key:'food',   i18n:'deck_food'},
+      {key:'verb',   i18n:'deck_verb'},
+      {key:'adj',    i18n:'deck_adj'},
+      {key:'time',   i18n:'deck_time'},
+      {key:'place',  i18n:'deck_place'},
     ],
   };
+
+  function deckLabelFor(set, deckKey) {
+    if (deckKey === 'saved') return t('deck_saved', currentSavedWrong().length);
+    const opt = (DECK_OPTIONS[set] || []).find(o => o.key === deckKey);
+    return opt ? t(opt.i18n) : '';
+  }
 
   function renderDeckChips() {
     const container = document.getElementById('deck-chips');
     const opts = DECK_OPTIONS[state.set];
     const savedCount = currentSavedWrong().length;
     container.innerHTML = opts.map(o =>
-      `<button class="chip${o.key === state.deck ? ' active' : ''}" data-deck="${o.key}">${o.label}</button>`
+      `<button class="chip${o.key === state.deck ? ' active' : ''}" data-deck="${o.key}">${t(o.i18n)}</button>`
     ).join('') +
-      `<button class="chip${state.deck === 'saved' ? ' active' : ''}" data-deck="saved" id="chip-saved"${savedCount === 0 ? ' disabled' : ''}>${savedCount ? `약점 · ${savedCount}` : '약점'}</button>`;
+      `<button class="chip${state.deck === 'saved' ? ' active' : ''}" data-deck="saved" id="chip-saved"${savedCount === 0 ? ' disabled' : ''}>${t('deck_saved', savedCount)}</button>`;
     container.querySelectorAll('.chip').forEach(btn => {
       btn.onclick = () => {
         if (btn.disabled) return;
@@ -1684,6 +2007,17 @@
   });
   document.getElementById('restart').onclick = () => newSession();
   document.getElementById('header-help').onclick = showHelp;
+
+  // Language toggle
+  document.getElementById('lang-toggle').onclick = () => {
+    state.lang = state.lang === 'ko' ? 'en' : 'ko';
+    saveLang(state.lang);
+    applyStaticI18n();
+    renderDeckChips();
+    render();
+    // Close help modal if open — content is stale
+    document.getElementById('modal-backdrop')?.remove();
+  };
 
   // Theme toggle
   document.getElementById('theme-toggle').onclick = () => {
@@ -1734,6 +2068,7 @@
   });
 
   // First paint
+  applyStaticI18n();
   renderDeckChips();
   newSession();
 </script>
