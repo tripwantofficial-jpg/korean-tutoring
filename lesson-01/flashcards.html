@@ -1810,13 +1810,21 @@
     render();
   }
   function startSession() {
-    if (state.queue.length === 0) state.queue = shuffle(cardsFor(state.set, state.deck));
-    if (state.originalQueue.length === 0) state.originalQueue = [...state.queue];
+    // Always rebuild queue from current set/deck.
+    // Chip clicks update state but don't touch state.queue,
+    // so the queue must be regenerated at session start to reflect the
+    // student's latest selection.
+    const fresh = shuffle(cardsFor(state.set, state.deck));
+    if (fresh.length === 0) return;  // nothing to drill (e.g. empty saved deck)
+    state.queue = fresh;
+    state.originalQueue = [...fresh];
     state.index = 0;
     state.revealed = false;
     state.startedAt = performance.now();
     state.endedAt = null;
     state.wrongThisRound = [];
+    state.round = 1;
+    state.roundHistory = [];
     render();
     startTimer();
   }
