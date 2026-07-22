@@ -679,6 +679,17 @@
     transition: color 0.15s, border-color 0.15s;
   }
   .session-back:hover { color: var(--ink); border-color: var(--muted); }
+  .session-nav {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .session-prev:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .session-prev:disabled:hover { color: var(--muted); border-color: var(--rule); }
   .session-stats-mini {
     display: flex;
     gap: 20px;
@@ -1405,6 +1416,7 @@
     <span class="shortcut"><kbd>←</kbd> <span data-i18n="sc_left">틀림</span></span>
     <span class="shortcut"><kbd>→</kbd> <span data-i18n="sc_right">맞음</span></span>
     <span class="shortcut"><kbd>L</kbd> <span data-i18n="sc_l">발음</span></span>
+    <span class="shortcut"><kbd>⌫</kbd> <span data-i18n="sc_prev">이전</span></span>
     <span class="shortcut"><kbd>R</kbd> <span data-i18n="sc_r">다시</span></span>
   </div>
   <div data-i18n="footer_meta">4주 부트캠프 · Week 1 · 자모 40</div>
@@ -1488,6 +1500,7 @@
       sc_right: '맞음',
       sc_r: '다시',
       sc_l: '발음',
+      sc_prev: '이전',
       btn_listen_aria: '발음 듣기',
       footer_meta: '4주 부트캠프 · Week 1 · 자모 40',
 
@@ -1581,6 +1594,7 @@
       end_btn_again: '전체 다시 하기',
       end_btn_clear_weak: '약점 초기화',
       end_btn_home: '← 처음으로',
+      btn_prev: '‹ 이전 카드',
       end_round_badge: (n) => `Round ${n} · 재훈련`,
 
       // --- celebration ---
@@ -1647,6 +1661,7 @@
       sc_right: 'right',
       sc_r: 'restart',
       sc_l: 'listen',
+      sc_prev: 'prev',
       btn_listen_aria: 'Listen to pronunciation',
       footer_meta: '4-Week Bootcamp · Week 1 · Letters 40',
 
@@ -1739,6 +1754,7 @@
       end_btn_again: 'Restart whole deck',
       end_btn_clear_weak: 'Clear weak spots',
       end_btn_home: '← Home',
+      btn_prev: '‹ Prev card',
       end_round_badge: (n) => `Round ${n} · retry`,
 
       // --- celebration ---
@@ -2042,6 +2058,17 @@
   function flip() {
     if (state.index < 0 || state.index >= state.queue.length) return;
     state.revealed = !state.revealed;
+    render();
+  }
+  // 이전 카드로 돌아가기 (실수로 넘어갔을 때)
+  function prevCard() {
+    if (state.index <= 0) return;   // 이미 첫 카드
+    state.index -= 1;
+    state.revealed = false;
+    // 돌아간 카드에 찍힌 '틀림' 표시를 취소해서 다시 깨끗하게 판정 가능
+    const cur = state.queue[state.index];
+    const wi = state.wrongThisRound.indexOf(cur);
+    if (wi > -1) state.wrongThisRound.splice(wi, 1);
     render();
   }
   function clearSavedWrong() {
@@ -2481,7 +2508,10 @@
     main.innerHTML = `
       <div class="session-modal" role="dialog" aria-modal="true">
         <div class="session-header">
-          <button class="session-back" id="session-back">${t('end_btn_home')}</button>
+          <div class="session-nav">
+            <button class="session-back" id="session-back">${t('end_btn_home')}</button>
+            <button class="session-back session-prev" id="session-prev"${state.index <= 0 ? ' disabled' : ''}>${t('btn_prev')}</button>
+          </div>
           <div class="session-stats-mini">
             <div class="s-item">
               <span class="s-label">${t('stat_progress')}</span>
@@ -2523,6 +2553,7 @@
     };
     document.getElementById('session-back').onclick = () => newSession();
     const bindOr = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+    bindOr('session-prev', () => prevCard());
     bindOr('btn-wrong', () => nextCard('wrong'));
     bindOr('btn-right', () => nextCard('right'));
     bindOr('btn-flip', flip);
@@ -2766,6 +2797,10 @@
     } else if (e.key === 'l' || e.key === 'L') {
       e.preventDefault();
       if (state.index >= 0 && state.index < state.queue.length) speakCurrentCard();
+    } else if (e.key === 'Backspace' || e.key === 'ArrowUp') {
+      // 이전 카드로 (실수로 넘어갔을 때)
+      e.preventDefault();
+      if (state.index > 0 && state.index < state.queue.length) prevCard();
     }
   });
 
