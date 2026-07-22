@@ -6,8 +6,8 @@
 <title>자모 플래시카드 · Week 1</title>
 <script src="data/config.js"></script>
 <script src="data/week1.js"></script>
-<!-- 추후 Week 2~4 데이터가 준비되면 여기에 script 태그 추가:
 <script src="data/week2.js"></script>
+<!-- 추후 Week 3~4 데이터가 준비되면 여기에 script 태그 추가:
 <script src="data/week3.js"></script>
 <script src="data/week4.js"></script>
 -->
@@ -1431,6 +1431,22 @@
     if (data && data.deckOptions) return data.deckOptions;
     return { jamo: [], word: [] };
   }
+  // 덱 옵션 라벨 해석 — 인라인 label_ko/label_en 우선, 없으면 i18n 키
+  function deckOptLabel(o) {
+    if (o.label_ko || o.label_en) {
+      return state.lang === 'en' ? (o.label_en || o.label_ko) : (o.label_ko || o.label_en);
+    }
+    return o.i18n ? t(o.i18n) : '';
+  }
+  // 이 주차에서 카드가 있는 세트만 반환 (['jamo','word'] 중)
+  function availableSets() {
+    const data = currentWeekData();
+    if (!data) return [];
+    const out = [];
+    if (data.jamo && data.jamo.length) out.push('jamo');
+    if (data.words && data.words.length) out.push('word');
+    return out;
+  }
 
   // ================================================================
   // i18n
@@ -2117,13 +2133,14 @@
   function switchToWeek(n) {
     state.week = n;
     saveWeek(n);
-    state.set = 'jamo';
+    // 새 주차에서 카드가 있는 첫 세트로 (Week 2는 word만)
+    const sets = availableSets();
+    state.set = sets.includes('jamo') ? 'jamo' : (sets[0] || 'word');
     state.deck = 'all';
     renderStart();
   }
 
   function renderStart() {
-    const isJamo = state.set === 'jamo';
     const cta = t('modecard_cta');
     const weekHasCards = weekHasContent(state.week);
 
@@ -2145,6 +2162,22 @@
       return;
     }
 
+    // 이 주차에서 카드가 있는 세트만 (예: Week 2는 word만)
+    const sets = availableSets();
+    if (!sets.includes(state.set)) state.set = sets[0] || 'word';
+    const isJamo = state.set === 'jamo';
+    const setLabels = { jamo: t('set_jamo'), word: t('set_word') };
+    const setChipsHtml = sets.map(s =>
+      `<button class="chip set-chip${state.set === s ? ' active' : ''}" data-set="${s}">${setLabels[s]}</button>`
+    ).join('');
+    // 세트가 하나뿐이면 세트 선택 UI 자체를 숨김
+    const setGroupHtml = sets.length > 1
+      ? `<div class="control-group">
+           <label class="control-label">${t('label_set')}</label>
+           <div id="set-chips" class="chip-group">${setChipsHtml}</div>
+         </div>`
+      : `<div id="set-chips" style="display:none">${setChipsHtml}</div>`;
+
     main.innerHTML = `
       <div class="landing">
         ${renderWeekTabs()}
@@ -2154,13 +2187,7 @@
             <img class="jin-photo" src="jin.png" alt="Jin" width="220">
           </div>
           <div class="controls-box">
-            <div class="control-group">
-              <label class="control-label">${t('label_set')}</label>
-              <div id="set-chips" class="chip-group">
-                <button class="chip set-chip${state.set === 'jamo' ? ' active' : ''}" data-set="jamo">${t('set_jamo')}</button>
-                <button class="chip set-chip${state.set === 'word' ? ' active' : ''}" data-set="word">${t('set_word')}</button>
-              </div>
-            </div>
+            ${setGroupHtml}
             <div class="control-group">
               <label class="control-label">${t('label_deck')}</label>
               <div id="deck-chips" class="chip-group"></div>
@@ -2631,7 +2658,7 @@
     if (deckKey === 'saved') return t('deck_saved', currentSavedWrong().length);
     const opts = getCurrentDeckOptions();
     const opt = (opts[set] || []).find(o => o.key === deckKey);
-    return opt ? t(opt.i18n) : '';
+    return opt ? deckOptLabel(opt) : '';
   }
 
   function renderDeckChips() {
@@ -2640,7 +2667,7 @@
     const opts = getCurrentDeckOptions()[state.set] || [];
     const savedCount = currentSavedWrong().length;
     container.innerHTML = opts.map(o =>
-      `<button class="chip${o.key === state.deck ? ' active' : ''}" data-deck="${o.key}">${t(o.i18n)}</button>`
+      `<button class="chip${o.key === state.deck ? ' active' : ''}" data-deck="${o.key}">${deckOptLabel(o)}</button>`
     ).join('') +
       `<button class="chip${state.deck === 'saved' ? ' active' : ''}" data-deck="saved" id="chip-saved"${savedCount === 0 ? ' disabled' : ''}>${t('deck_saved', savedCount)}</button>`;
     container.querySelectorAll('.chip').forEach(btn => {
