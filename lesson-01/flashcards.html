@@ -1,8 +1,15 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 테마 초기화 — 기본은 밝은 버전 고정. 사용자가 토글한 값만 저장·복원 (OS 다크모드 따라가지 않음) -->
+<script>
+  try {
+    var _t = localStorage.getItem('jamo-flashcards-theme-v1');
+    document.documentElement.setAttribute('data-theme', _t === 'dark' ? 'dark' : 'light');
+  } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+</script>
 <title>Jin's 4주 부트캠프 · 한국어 플래시카드</title>
 
 <!-- 카톡·SNS 미리보기 (Open Graph) -->
@@ -1604,29 +1611,29 @@
       // --- help modal ---
       help_title: '사용법',
       help_close_aria: '닫기',
-      help_p1: '4주 부트캠프 Week 1 도구. <strong>자모 40장</strong>(자음 19 + 모음 21)과 <strong>기초단어 100장</strong>을 반복 훈련합니다.',
-      help_h3_set: '세트 (위 첫 번째 알약 버튼)',
-      help_set_jamo: '<strong>자모 40</strong> — 한글 알파벳 인식 (Week 1 시작)',
-      help_set_word: '<strong>단어 100</strong> — 자모가 익숙해지면 바로 실전 단어 읽기로 (같은 주차 안에 이어서)',
-      help_h3_class: '수업에서 (강사가 씀)',
-      help_class_1: '<strong>학생 진단</strong> 모드를 골라요',
-      help_class_2: '학생 앞에 화면을 놓고 <strong>시작하기</strong>',
-      help_class_3: '학생이 소리내어 읽으면 강사가 <strong>✓ 맞음</strong> 또는 <strong>✗ 틀림</strong> 클릭',
-      help_class_4: '모르겠으면 <strong>답 보기</strong> 로 확인 후 판단',
-      help_class_5: '끝나면 <strong>리뷰 화면</strong> — 놓친 카드의 정답을 눈으로 확인 → <strong>이 N장 다시 도전</strong> 클릭',
-      help_class_6: '0장 놓칠 때까지 라운드가 반복돼요 → 완주 축하 화면',
-      help_class_7: '매주 이 숫자(총 시간·정확도)를 기록지에 적으세요',
-      help_h3_home: '집에서 (학생이 씀)',
-      help_home_1: '<strong>혼자 연습</strong> 모드 → 카드 탭하면 답이 나옵니다. 다시 탭하면 다음',
-      help_home_2: '받아쓰기 감각을 키우고 싶으면 <strong>소리→자모</strong> (또는 단어 세트에서 <strong>뜻→단어</strong>)',
-      help_home_3: '틀렸다고 표시한 카드는 자동으로 <strong>약점</strong> 덱에 쌓여요. 다음날 약점만 골라 다시 도세요',
-      help_h3_deck: '덱 (두 번째 알약 줄)',
-      help_deck_p: '전체가 부담이면 자음만·모음만·명사만·동사만 등으로 좁혀서 연습할 수 있어요.',
-      help_h3_shortcuts: '키보드 단축키',
+      help_intro: 'Jin의 4주 부트캠프 <strong>매일 연습 도구</strong>예요. 매주 새 카드 세트가 열립니다. 수업(선생님)과 집(학생) 모두에서 써요.',
+      help_h3_weeks: '주차 (Week 1~4)',
+      help_week_1: '상단 <strong>Week 1~4 탭</strong>으로 그 주 카드로 이동. Week 1은 항상 열려있어요.',
+      help_week_2: 'Week 2~4는 🔒 잠겨있어요. Jin이 수업에서 알려준 <strong>비밀번호</strong>를 넣으면 열립니다.',
+      help_week_3: '한 번 열면 그 기기에서 계속 열려있어요. 진도에 맞춰 매주 하나씩 열립니다.',
+      help_h3_modes: '3가지 모드',
+      help_mode_diag: '<strong>학생 진단</strong> — 시간 재며 카드를 넘기고 <strong>✓ 맞음 / ✗ 틀림</strong> 판정. 끝나면 정확도·틀린 카드 요약. (수업 중 선생님용)',
+      help_mode_study: '<strong>혼자 연습</strong> — 카드를 탭하면 답, 다시 탭하면 다음 카드. 자기 페이스로. (집에서 학생용)',
+      help_mode_reverse: '<strong>소리→글자</strong> (단어 세트에선 <strong>뜻→단어</strong>) — 답을 먼저 보고 원래 글자·단어를 떠올려요. 받아쓰기·어휘 훈련.',
+      help_h3_sets: '세트 · 덱 (연습 범위 고르기)',
+      help_sets_1: '주차에 따라 <strong>자모</strong>·<strong>단어</strong> 세트가 있어요. 그 주차에 없는 세트는 자동으로 숨겨집니다.',
+      help_sets_2: '<strong>덱</strong> 버튼으로 전체 대신 자음만·모음만·명사만·동사만 등 좁혀서 연습할 수 있어요.',
+      help_sets_3: '틀렸다고 표시한 카드는 자동으로 <strong>약점</strong> 덱에 쌓여요. 다음날 약점만 골라 다시 도세요.',
+      help_h3_review: '복습 · 되돌리기',
+      help_review_1: '진단·소리→글자 모드에서 끝나면 <strong>리뷰 화면</strong> — 놓친 카드 정답 확인 후 <strong>이 N장 다시 도전</strong>.',
+      help_review_2: '0장 놓칠 때까지 라운드가 반복돼요 → 완주 축하 화면.',
+      help_review_3: '실수로 다음 카드로 넘어갔으면 <strong>‹ 이전 카드</strong>로 돌아가세요.',
+      help_h3_shortcuts: '키보드 단축키 (PC)',
       help_sc_space: '다음 · 시작',
       help_sc_f: '카드 뒤집기 (답 보기)',
       help_sc_arrows: '틀림 · 맞음',
       help_sc_l: '발음 듣기 (🔊 버튼)',
+      help_sc_prev: '이전 카드로',
       help_sc_r: '처음부터 다시',
 
       // --- dialogs ---
@@ -1764,29 +1771,29 @@
       // --- help modal ---
       help_title: 'How to use',
       help_close_aria: 'Close',
-      help_p1: 'Week 1 tool of a 4-week bootcamp. Drill the <strong>40 Korean letters</strong> (19 consonants + 21 vowels) and <strong>100 basic words</strong>.',
-      help_h3_set: 'Set (top pill row)',
-      help_set_jamo: '<strong>Letters 40</strong> — recognize the Hangul alphabet (start of Week 1)',
-      help_set_word: '<strong>Words 100</strong> — once letters feel easy, jump to real word reading (same week)',
-      help_h3_class: 'In class (teacher runs it)',
-      help_class_1: 'Pick <strong>Diagnostic</strong> mode',
-      help_class_2: 'Face the screen toward the student and hit <strong>Start</strong>',
-      help_class_3: 'Student reads aloud; teacher taps <strong>✓ Got it</strong> or <strong>✗ Missed</strong>',
-      help_class_4: 'Unsure? Tap <strong>Show answer</strong> to check',
-      help_class_5: 'At the end you get a <strong>Review screen</strong> — check the correct answers → hit <strong>drill these N</strong>',
-      help_class_6: 'Rounds repeat until 0 misses → celebration screen',
-      help_class_7: 'Write down the totals (time · accuracy) in your weekly log',
-      help_h3_home: 'At home (student uses it)',
-      help_home_1: '<strong>Solo Practice</strong> mode → tap the card, see the answer, tap again for next',
-      help_home_2: 'To train your dictation reflex, use <strong>Sound → Letter</strong> (or <strong>Meaning → Word</strong> in the word set)',
-      help_home_3: 'Missed cards automatically pile up in the <strong>Weak spots</strong> deck — drill just those the next day',
-      help_h3_deck: 'Deck (second pill row)',
-      help_deck_p: 'If the whole set feels heavy, narrow to consonants-only, verbs-only, etc.',
-      help_h3_shortcuts: 'Keyboard shortcuts',
+      help_intro: `Jin's 4-week bootcamp <strong>daily practice tool</strong>. A new card set opens each week. Used both in class (teacher) and at home (student).`,
+      help_h3_weeks: 'Weeks (Week 1–4)',
+      help_week_1: 'Use the <strong>Week 1–4 tabs</strong> up top to jump to that week. Week 1 is always open.',
+      help_week_2: 'Weeks 2–4 are 🔒 locked. Enter the <strong>password</strong> Jin gives you in class to unlock.',
+      help_week_3: 'Once unlocked, it stays open on that device. One week opens each week as you progress.',
+      help_h3_modes: 'Three modes',
+      help_mode_diag: '<strong>Diagnostic</strong> — timed run; tap <strong>✓ Got it / ✗ Missed</strong> per card. Ends with accuracy and a list of misses. (teacher, in class)',
+      help_mode_study: '<strong>Solo Practice</strong> — tap the card for the answer, tap again for next. Your own pace. (student, at home)',
+      help_mode_reverse: '<strong>Sound → Letter</strong> (or <strong>Meaning → Word</strong> in word sets) — see the answer first, recall the original letter/word. Dictation & vocab training.',
+      help_h3_sets: 'Sets · Decks (pick your range)',
+      help_sets_1: 'Depending on the week there are <strong>Letters</strong> and <strong>Words</strong> sets. A set the week doesn\'t have is auto-hidden.',
+      help_sets_2: 'Use the <strong>Deck</strong> buttons to narrow to consonants-only, nouns-only, verbs-only, etc. instead of the whole set.',
+      help_sets_3: 'Cards you mark wrong pile up in the <strong>Weak spots</strong> deck automatically — drill just those the next day.',
+      help_h3_review: 'Review · Undo',
+      help_review_1: 'In Diagnostic / Sound→Letter, the end shows a <strong>Review screen</strong> — check the misses → hit <strong>drill these N</strong>.',
+      help_review_2: 'Rounds repeat until 0 misses → celebration screen.',
+      help_review_3: 'Accidentally advanced? Tap <strong>‹ Prev card</strong> to go back.',
+      help_h3_shortcuts: 'Keyboard shortcuts (PC)',
       help_sc_space: 'next · start',
       help_sc_f: 'flip card (show answer)',
       help_sc_arrows: 'wrong · right',
       help_sc_l: 'listen to pronunciation (🔊 button)',
+      help_sc_prev: 'previous card',
       help_sc_r: 'restart from scratch',
 
       // --- dialogs ---
@@ -2351,34 +2358,35 @@
             <button class="modal-close" id="modal-close" aria-label="${t('help_close_aria')}">✕</button>
           </div>
 
-          <p>${t('help_p1')}</p>
+          <p>${t('help_intro')}</p>
 
-          <h3>${t('help_h3_set')}</h3>
+          <h3>${t('help_h3_weeks')}</h3>
           <ul>
-            <li>${t('help_set_jamo')}</li>
-            <li>${t('help_set_word')}</li>
+            <li>${t('help_week_1')}</li>
+            <li>${t('help_week_2')}</li>
+            <li>${t('help_week_3')}</li>
           </ul>
 
-          <h3>${t('help_h3_class')}</h3>
+          <h3>${t('help_h3_modes')}</h3>
           <ul>
-            <li>${t('help_class_1')}</li>
-            <li>${t('help_class_2')}</li>
-            <li>${t('help_class_3')}</li>
-            <li>${t('help_class_4')}</li>
-            <li>${t('help_class_5')}</li>
-            <li>${t('help_class_6')}</li>
-            <li>${t('help_class_7')}</li>
+            <li>${t('help_mode_diag')}</li>
+            <li>${t('help_mode_study')}</li>
+            <li>${t('help_mode_reverse')}</li>
           </ul>
 
-          <h3>${t('help_h3_home')}</h3>
+          <h3>${t('help_h3_sets')}</h3>
           <ul>
-            <li>${t('help_home_1')}</li>
-            <li>${t('help_home_2')}</li>
-            <li>${t('help_home_3')}</li>
+            <li>${t('help_sets_1')}</li>
+            <li>${t('help_sets_2')}</li>
+            <li>${t('help_sets_3')}</li>
           </ul>
 
-          <h3>${t('help_h3_deck')}</h3>
-          <p>${t('help_deck_p')}</p>
+          <h3>${t('help_h3_review')}</h3>
+          <ul>
+            <li>${t('help_review_1')}</li>
+            <li>${t('help_review_2')}</li>
+            <li>${t('help_review_3')}</li>
+          </ul>
 
           <h3>${t('help_h3_shortcuts')}</h3>
           <ul>
@@ -2386,6 +2394,7 @@
             <li><span class="kbd-inline">F</span> ${t('help_sc_f')}</li>
             <li><span class="kbd-inline">←</span> · <span class="kbd-inline">→</span> ${t('help_sc_arrows')}</li>
             <li><span class="kbd-inline">L</span> ${t('help_sc_l')}</li>
+            <li><span class="kbd-inline">⌫</span> ${t('help_sc_prev')}</li>
             <li><span class="kbd-inline">R</span> ${t('help_sc_r')}</li>
           </ul>
         </div>
@@ -2748,11 +2757,13 @@
     document.getElementById('modal-backdrop')?.remove();
   };
 
-  // Theme toggle
+  // Theme toggle — 기본 밝은 버전. 사용자가 바꾼 값만 저장.
+  const THEME_KEY = 'jamo-flashcards-theme-v1';
   document.getElementById('theme-toggle').onclick = () => {
-    const cur = document.documentElement.getAttribute('data-theme');
-    const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_KEY, next); } catch {}
   };
 
   // Keyboard
