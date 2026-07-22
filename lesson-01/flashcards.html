@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>자모 플래시카드 · Week 1</title>
+<script src="data/config.js"></script>
+<script src="data/week1.js"></script>
+<!-- 추후 Week 2~4 데이터가 준비되면 여기에 script 태그 추가:
+<script src="data/week2.js"></script>
+<script src="data/week3.js"></script>
+<script src="data/week4.js"></script>
+-->
+
 <style>
   :root {
     --bg: #F6F1E7;
@@ -843,6 +851,125 @@
     width: 100%;
   }
 
+  /* Week selector tabs (top of landing) */
+  .week-tabs {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    margin: 0 auto 24px;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .week-tabs::-webkit-scrollbar { display: none; }
+  .week-tab {
+    border: none;
+    background: transparent;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    font-family: inherit;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .week-tab:hover:not(:disabled) { color: var(--ink); }
+  .week-tab.active {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .week-tab.locked { opacity: 0.65; }
+  .week-tab.locked .lock-icon { font-size: 11px; }
+  .week-tab.locked:hover { opacity: 1; color: var(--ink); }
+
+  /* Empty week placeholder (unlocked but no content yet) */
+  .empty-week {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .empty-week .icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+  .empty-week h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: -0.005em;
+  }
+  .empty-week p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0 0 20px;
+    max-width: 34ch;
+  }
+
+  /* Password modal for locked weeks */
+  .pw-modal .modal { max-width: 380px; }
+  .pw-modal input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 12px 0 8px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .pw-modal input[type="password"]:focus { border-color: var(--accent); }
+  .pw-modal.error input[type="password"] {
+    border-color: var(--wrong);
+    animation: pw-shake 0.4s ease;
+  }
+  @keyframes pw-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+  .pw-error {
+    color: var(--wrong);
+    font-size: 13px;
+    min-height: 18px;
+    margin: 0 0 10px;
+  }
+  .pw-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 4px 0 0;
+    text-align: center;
+    font-style: italic;
+  }
+  .pw-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  .pw-actions .btn { min-width: 88px; padding: 10px 18px; font-size: 14px; }
+
   /* Landing intro row: Jin photo with speech bubble + controls box side-by-side */
   .jin-controls-row {
     display: flex;
@@ -1276,173 +1403,34 @@
   // ================================================================
   // Data
   // ================================================================
-  const JAMO = [
-    // consonants — basic 9
-    {id:'ㄱ', type:'jamo', char:'ㄱ', name:'기역', sound:'g / k',         groups:['consonant','basic']},
-    {id:'ㄴ', type:'jamo', char:'ㄴ', name:'니은', sound:'n',             groups:['consonant','basic']},
-    {id:'ㄷ', type:'jamo', char:'ㄷ', name:'디귿', sound:'d / t',         groups:['consonant','basic']},
-    {id:'ㄹ', type:'jamo', char:'ㄹ', name:'리을', sound:'r / l',         groups:['consonant','basic']},
-    {id:'ㅁ', type:'jamo', char:'ㅁ', name:'미음', sound:'m',             groups:['consonant','basic']},
-    {id:'ㅂ', type:'jamo', char:'ㅂ', name:'비읍', sound:'b / p',         groups:['consonant','basic']},
-    {id:'ㅅ', type:'jamo', char:'ㅅ', name:'시옷', sound:'s',             groups:['consonant','basic']},
-    {id:'ㅇ', type:'jamo', char:'ㅇ', name:'이응', sound:'silent · ng',   groups:['consonant','basic']},
-    {id:'ㅈ', type:'jamo', char:'ㅈ', name:'지읒', sound:'j',             groups:['consonant','basic']},
-    // consonants — aspirated 5
-    {id:'ㅊ', type:'jamo', char:'ㅊ', name:'치읓', sound:'ch',            groups:['consonant','hard']},
-    {id:'ㅋ', type:'jamo', char:'ㅋ', name:'키읔', sound:'k · aspirated', groups:['consonant','hard']},
-    {id:'ㅌ', type:'jamo', char:'ㅌ', name:'티읕', sound:'t · aspirated', groups:['consonant','hard']},
-    {id:'ㅍ', type:'jamo', char:'ㅍ', name:'피읖', sound:'p · aspirated', groups:['consonant','hard']},
-    {id:'ㅎ', type:'jamo', char:'ㅎ', name:'히읗', sound:'h',             groups:['consonant','hard']},
-    // consonants — tense 5
-    {id:'ㄲ', type:'jamo', char:'ㄲ', name:'쌍기역', sound:'kk',          groups:['consonant','hard']},
-    {id:'ㄸ', type:'jamo', char:'ㄸ', name:'쌍디귿', sound:'tt',          groups:['consonant','hard']},
-    {id:'ㅃ', type:'jamo', char:'ㅃ', name:'쌍비읍', sound:'pp',          groups:['consonant','hard']},
-    {id:'ㅆ', type:'jamo', char:'ㅆ', name:'쌍시옷', sound:'ss',          groups:['consonant','hard']},
-    {id:'ㅉ', type:'jamo', char:'ㅉ', name:'쌍지읒', sound:'jj',          groups:['consonant','hard']},
-    // vowels — basic 10
-    {id:'ㅏ', type:'jamo', char:'ㅏ', name:'아', sound:'a',    groups:['vowel','basic']},
-    {id:'ㅑ', type:'jamo', char:'ㅑ', name:'야', sound:'ya',   groups:['vowel','basic']},
-    {id:'ㅓ', type:'jamo', char:'ㅓ', name:'어', sound:'eo',   groups:['vowel','basic']},
-    {id:'ㅕ', type:'jamo', char:'ㅕ', name:'여', sound:'yeo',  groups:['vowel','basic']},
-    {id:'ㅗ', type:'jamo', char:'ㅗ', name:'오', sound:'o',    groups:['vowel','basic']},
-    {id:'ㅛ', type:'jamo', char:'ㅛ', name:'요', sound:'yo',   groups:['vowel','basic']},
-    {id:'ㅜ', type:'jamo', char:'ㅜ', name:'우', sound:'u',    groups:['vowel','basic']},
-    {id:'ㅠ', type:'jamo', char:'ㅠ', name:'유', sound:'yu',   groups:['vowel','basic']},
-    {id:'ㅡ', type:'jamo', char:'ㅡ', name:'으', sound:'eu',   groups:['vowel','basic']},
-    {id:'ㅣ', type:'jamo', char:'ㅣ', name:'이', sound:'i',    groups:['vowel','basic']},
-    // vowels — complex 11
-    {id:'ㅐ', type:'jamo', char:'ㅐ', name:'애', sound:'ae',       groups:['vowel','complex']},
-    {id:'ㅒ', type:'jamo', char:'ㅒ', name:'얘', sound:'yae',      groups:['vowel','complex']},
-    {id:'ㅔ', type:'jamo', char:'ㅔ', name:'에', sound:'e',        groups:['vowel','complex']},
-    {id:'ㅖ', type:'jamo', char:'ㅖ', name:'예', sound:'ye',       groups:['vowel','complex']},
-    {id:'ㅘ', type:'jamo', char:'ㅘ', name:'와', sound:'wa',       groups:['vowel','complex']},
-    {id:'ㅙ', type:'jamo', char:'ㅙ', name:'왜', sound:'wae',      groups:['vowel','complex']},
-    {id:'ㅚ', type:'jamo', char:'ㅚ', name:'외', sound:'oe · we',  groups:['vowel','complex']},
-    {id:'ㅝ', type:'jamo', char:'ㅝ', name:'워', sound:'wo',       groups:['vowel','complex']},
-    {id:'ㅞ', type:'jamo', char:'ㅞ', name:'웨', sound:'we',       groups:['vowel','complex']},
-    {id:'ㅟ', type:'jamo', char:'ㅟ', name:'위', sound:'wi',       groups:['vowel','complex']},
-    {id:'ㅢ', type:'jamo', char:'ㅢ', name:'의', sound:'ui',       groups:['vowel','complex']},
-  ];
+  // ================================================================
+  // Week data helpers — 실제 데이터는 data/weekN.js 에서 로드됨
+  // ================================================================
+  const WEEK_DATA = window.WEEK_DATA || {};
 
-  // 기초단어 100개 — 7 대표음 받침만 사용. 1주차 학생이 즉시 읽을 수 있는 실용 어휘.
-  const WORDS = [
-    // 명사 30 — 일상 사물·신체·자연
-    {id:'물',     type:'word', char:'물',     sound:'mul',        meaning:'water',       groups:['noun']},
-    {id:'밥',     type:'word', char:'밥',     sound:'bap',        meaning:'rice / meal', groups:['noun']},
-    {id:'집',     type:'word', char:'집',     sound:'jip',        meaning:'house',       groups:['noun']},
-    {id:'책',     type:'word', char:'책',     sound:'chaek',      meaning:'book',        groups:['noun']},
-    {id:'문',     type:'word', char:'문',     sound:'mun',        meaning:'door',        groups:['noun']},
-    {id:'손',     type:'word', char:'손',     sound:'son',        meaning:'hand',        groups:['noun']},
-    {id:'발',     type:'word', char:'발',     sound:'bal',        meaning:'foot',        groups:['noun']},
-    {id:'눈',     type:'word', char:'눈',     sound:'nun',        meaning:'eye / snow',  groups:['noun']},
-    {id:'코',     type:'word', char:'코',     sound:'ko',         meaning:'nose',        groups:['noun']},
-    {id:'입',     type:'word', char:'입',     sound:'ip',         meaning:'mouth',       groups:['noun']},
-    {id:'귀',     type:'word', char:'귀',     sound:'gwi',        meaning:'ear',         groups:['noun']},
-    {id:'옷',     type:'word', char:'옷',     sound:'ot',         meaning:'clothes',     groups:['noun']},
-    {id:'가방',   type:'word', char:'가방',   sound:'ga-bang',    meaning:'bag',         groups:['noun']},
-    {id:'신발',   type:'word', char:'신발',   sound:'sin-bal',    meaning:'shoes',       groups:['noun']},
-    {id:'돈',     type:'word', char:'돈',     sound:'don',        meaning:'money',       groups:['noun']},
-    {id:'시간',   type:'word', char:'시간',   sound:'si-gan',     meaning:'time',        groups:['noun']},
-    {id:'하늘',   type:'word', char:'하늘',   sound:'ha-neul',    meaning:'sky',         groups:['noun']},
-    {id:'산',     type:'word', char:'산',     sound:'san',        meaning:'mountain',    groups:['noun']},
-    {id:'바다',   type:'word', char:'바다',   sound:'ba-da',      meaning:'sea',         groups:['noun']},
-    {id:'꽃',     type:'word', char:'꽃',     sound:'kkot',       meaning:'flower',      groups:['noun']},
-    {id:'나무',   type:'word', char:'나무',   sound:'na-mu',      meaning:'tree',        groups:['noun']},
-    {id:'길',     type:'word', char:'길',     sound:'gil',        meaning:'road',        groups:['noun']},
-    {id:'방',     type:'word', char:'방',     sound:'bang',       meaning:'room',        groups:['noun']},
-    {id:'창문',   type:'word', char:'창문',   sound:'chang-mun',  meaning:'window',      groups:['noun']},
-    {id:'의자',   type:'word', char:'의자',   sound:'ui-ja',      meaning:'chair',       groups:['noun']},
-    {id:'책상',   type:'word', char:'책상',   sound:'chaek-sang', meaning:'desk',        groups:['noun']},
-    {id:'침대',   type:'word', char:'침대',   sound:'chim-dae',   meaning:'bed',         groups:['noun']},
-    {id:'수건',   type:'word', char:'수건',   sound:'su-geon',    meaning:'towel',       groups:['noun']},
-    {id:'우산',   type:'word', char:'우산',   sound:'u-san',      meaning:'umbrella',    groups:['noun']},
-    {id:'지갑',   type:'word', char:'지갑',   sound:'ji-gap',     meaning:'wallet',      groups:['noun']},
-
-    // 사람·가족 10
-    {id:'나',       type:'word', char:'나',       sound:'na',              meaning:'I',                        groups:['people']},
-    {id:'너',       type:'word', char:'너',       sound:'neo',             meaning:'you (casual)',             groups:['people']},
-    {id:'사람',     type:'word', char:'사람',     sound:'sa-ram',          meaning:'person',                   groups:['people']},
-    {id:'친구',     type:'word', char:'친구',     sound:'chin-gu',         meaning:'friend',                   groups:['people']},
-    {id:'엄마',     type:'word', char:'엄마',     sound:'eom-ma',          meaning:'mom',                      groups:['people']},
-    {id:'아빠',     type:'word', char:'아빠',     sound:'a-ppa',           meaning:'dad',                      groups:['people']},
-    {id:'아이',     type:'word', char:'아이',     sound:'a-i',             meaning:'child',                    groups:['people']},
-    {id:'아기',     type:'word', char:'아기',     sound:'a-gi',            meaning:'baby',                     groups:['people']},
-    {id:'언니',     type:'word', char:'언니',     sound:'eon-ni',          meaning:'older sister (of woman)',  groups:['people']},
-    {id:'선생님',   type:'word', char:'선생님',   sound:'seon-saeng-nim',  meaning:'teacher',                  groups:['people']},
-
-    // 음식·음료 15
-    {id:'국',       type:'word', char:'국',       sound:'guk',        meaning:'soup',        groups:['food']},
-    {id:'김치',     type:'word', char:'김치',     sound:'gim-chi',    meaning:'kimchi',      groups:['food']},
-    {id:'고기',     type:'word', char:'고기',     sound:'go-gi',      meaning:'meat',        groups:['food']},
-    {id:'생선',     type:'word', char:'생선',     sound:'saeng-seon', meaning:'fish',        groups:['food']},
-    {id:'계란',     type:'word', char:'계란',     sound:'gye-ran',    meaning:'egg',         groups:['food']},
-    {id:'빵',       type:'word', char:'빵',       sound:'ppang',      meaning:'bread',       groups:['food']},
-    {id:'국수',     type:'word', char:'국수',     sound:'guk-su',     meaning:'noodles',     groups:['food']},
-    {id:'우유',     type:'word', char:'우유',     sound:'u-yu',       meaning:'milk',        groups:['food']},
-    {id:'주스',     type:'word', char:'주스',     sound:'ju-seu',     meaning:'juice',       groups:['food']},
-    {id:'커피',     type:'word', char:'커피',     sound:'keo-pi',     meaning:'coffee',      groups:['food']},
-    {id:'차',       type:'word', char:'차',       sound:'cha',        meaning:'tea',         groups:['food']},
-    {id:'사과',     type:'word', char:'사과',     sound:'sa-gwa',     meaning:'apple',       groups:['food']},
-    {id:'바나나',   type:'word', char:'바나나',   sound:'ba-na-na',   meaning:'banana',      groups:['food']},
-    {id:'딸기',     type:'word', char:'딸기',     sound:'ttal-gi',    meaning:'strawberry',  groups:['food']},
-    {id:'김밥',     type:'word', char:'김밥',     sound:'gim-bap',    meaning:'kimbap',      groups:['food']},
-
-    // 동사 15 (사전형)
-    {id:'가다',     type:'word', char:'가다',     sound:'ga-da',       meaning:'to go',      groups:['verb']},
-    {id:'오다',     type:'word', char:'오다',     sound:'o-da',        meaning:'to come',    groups:['verb']},
-    {id:'먹다',     type:'word', char:'먹다',     sound:'meok-da',     meaning:'to eat',     groups:['verb']},
-    {id:'마시다',   type:'word', char:'마시다',   sound:'ma-si-da',    meaning:'to drink',   groups:['verb']},
-    {id:'자다',     type:'word', char:'자다',     sound:'ja-da',       meaning:'to sleep',   groups:['verb']},
-    {id:'보다',     type:'word', char:'보다',     sound:'bo-da',       meaning:'to see',     groups:['verb']},
-    {id:'듣다',     type:'word', char:'듣다',     sound:'deut-da',     meaning:'to listen',  groups:['verb']},
-    {id:'말하다',   type:'word', char:'말하다',   sound:'mal-ha-da',   meaning:'to speak',   groups:['verb']},
-    {id:'사다',     type:'word', char:'사다',     sound:'sa-da',       meaning:'to buy',     groups:['verb']},
-    {id:'팔다',     type:'word', char:'팔다',     sound:'pal-da',      meaning:'to sell',    groups:['verb']},
-    {id:'만나다',   type:'word', char:'만나다',   sound:'man-na-da',   meaning:'to meet',    groups:['verb']},
-    {id:'하다',     type:'word', char:'하다',     sound:'ha-da',       meaning:'to do',      groups:['verb']},
-    {id:'알다',     type:'word', char:'알다',     sound:'al-da',       meaning:'to know',    groups:['verb']},
-    {id:'살다',     type:'word', char:'살다',     sound:'sal-da',      meaning:'to live',    groups:['verb']},
-    {id:'주다',     type:'word', char:'주다',     sound:'ju-da',       meaning:'to give',    groups:['verb']},
-
-    // 형용사 10
-    {id:'좋다',     type:'word', char:'좋다',     sound:'jo-ta',       meaning:'good',       groups:['adj']},
-    {id:'나쁘다',   type:'word', char:'나쁘다',   sound:'na-ppeu-da',  meaning:'bad',        groups:['adj']},
-    {id:'크다',     type:'word', char:'크다',     sound:'keu-da',      meaning:'big',        groups:['adj']},
-    {id:'작다',     type:'word', char:'작다',     sound:'jak-da',      meaning:'small',      groups:['adj']},
-    {id:'빠르다',   type:'word', char:'빠르다',   sound:'ppa-reu-da',  meaning:'fast',       groups:['adj']},
-    {id:'느리다',   type:'word', char:'느리다',   sound:'neu-ri-da',   meaning:'slow',       groups:['adj']},
-    {id:'예쁘다',   type:'word', char:'예쁘다',   sound:'ye-ppeu-da',  meaning:'pretty',     groups:['adj']},
-    {id:'뜨겁다',   type:'word', char:'뜨겁다',   sound:'tteu-geop-da',meaning:'hot',        groups:['adj']},
-    {id:'차갑다',   type:'word', char:'차갑다',   sound:'cha-gap-da',  meaning:'cold',       groups:['adj']},
-    {id:'쉽다',     type:'word', char:'쉽다',     sound:'swip-da',     meaning:'easy',       groups:['adj']},
-
-    // 시간·숫자 10
-    {id:'하나',     type:'word', char:'하나',     sound:'ha-na',       meaning:'one',        groups:['time']},
-    {id:'둘',       type:'word', char:'둘',       sound:'dul',         meaning:'two',        groups:['time']},
-    {id:'셋',       type:'word', char:'셋',       sound:'set',         meaning:'three',      groups:['time']},
-    {id:'넷',       type:'word', char:'넷',       sound:'net',         meaning:'four',       groups:['time']},
-    {id:'다섯',     type:'word', char:'다섯',     sound:'da-seot',     meaning:'five',       groups:['time']},
-    {id:'오늘',     type:'word', char:'오늘',     sound:'o-neul',      meaning:'today',      groups:['time']},
-    {id:'내일',     type:'word', char:'내일',     sound:'nae-il',      meaning:'tomorrow',   groups:['time']},
-    {id:'어제',     type:'word', char:'어제',     sound:'eo-je',       meaning:'yesterday',  groups:['time']},
-    {id:'아침',     type:'word', char:'아침',     sound:'a-chim',      meaning:'morning',    groups:['time']},
-    {id:'저녁',     type:'word', char:'저녁',     sound:'jeo-nyeok',   meaning:'evening',    groups:['time']},
-
-    // 장소 10
-    {id:'학교',     type:'word', char:'학교',     sound:'hak-gyo',     meaning:'school',     groups:['place']},
-    {id:'회사',     type:'word', char:'회사',     sound:'hoe-sa',      meaning:'company',    groups:['place']},
-    {id:'카페',     type:'word', char:'카페',     sound:'ka-pe',       meaning:'café',       groups:['place']},
-    {id:'식당',     type:'word', char:'식당',     sound:'sik-dang',    meaning:'restaurant', groups:['place']},
-    {id:'병원',     type:'word', char:'병원',     sound:'byeong-won',  meaning:'hospital',   groups:['place']},
-    {id:'공항',     type:'word', char:'공항',     sound:'gong-hang',   meaning:'airport',    groups:['place']},
-    {id:'시장',     type:'word', char:'시장',     sound:'si-jang',     meaning:'market',     groups:['place']},
-    {id:'공원',     type:'word', char:'공원',     sound:'gong-won',    meaning:'park',       groups:['place']},
-    {id:'지하철',   type:'word', char:'지하철',   sound:'ji-ha-cheol', meaning:'subway',     groups:['place']},
-    {id:'은행',     type:'word', char:'은행',     sound:'eun-haeng',   meaning:'bank',       groups:['place']},
-  ];
-
-  // 세트별 카드 조회
-  const CARDS_BY_SET = { jamo: JAMO, word: WORDS };
+  function currentWeekData() {
+    return WEEK_DATA[state?.week || 1] || null;
+  }
+  function weekHasContent(n) {
+    const d = WEEK_DATA[n];
+    return !!(d && ((d.jamo && d.jamo.length) || (d.words && d.words.length)));
+  }
+  function weekIsUnlocked(n) {
+    if (n === 1) return true;                          // Week 1은 항상 열림
+    return (state?.unlockedWeeks || []).includes(n);
+  }
+  function getSetCards(set) {
+    const data = currentWeekData();
+    if (!data) return [];
+    if (set === 'jamo') return data.jamo || [];
+    if (set === 'word') return data.words || [];
+    return [];
+  }
+  function getCurrentDeckOptions() {
+    const data = currentWeekData();
+    if (data && data.deckOptions) return data.deckOptions;
+    return { jamo: [], word: [] };
+  }
 
   // ================================================================
   // i18n
@@ -1505,6 +1493,17 @@
       landing_deck_note: (deckLabel, size) => `현재 덱: <strong>${deckLabel}</strong> · <strong>${size}</strong>장 · 위 알약 버튼으로 바꿀 수 있어요.`,
       landing_help: '? 처음이라 어떻게 쓰는지 모르겠어요',
       jin_greeting: '안녕, <strong>Jin</strong>이에요. 너의 한국어 연습을 도와줄게요.',
+      week_label: (n) => `Week ${n}`,
+      empty_week_title: (n) => `Week ${n} 콘텐츠 준비 중`,
+      empty_week_body: 'Jin이 이번 주 카드를 큐레이션 중이에요. 곧 열려요.',
+      empty_week_back: '← Week 1로 돌아가기',
+      pw_title: (n) => `🔒 Week ${n} 잠금 해제`,
+      pw_body: 'Jin이 알려준 비밀번호를 입력하세요.',
+      pw_hint: '수업 마지막에 안내한 단어예요.',
+      pw_placeholder: '비밀번호',
+      pw_submit: '열기',
+      pw_cancel: '취소',
+      pw_error: '비밀번호가 다릅니다.',
 
       // --- mode cards ---
       modecard_tag_tutor: '수업 중 · 강사가 조작',
@@ -1652,6 +1651,17 @@
       landing_deck_note: (deckLabel, size) => `Current deck: <strong>${deckLabel}</strong> · <strong>${size}</strong> cards · switch with the pill buttons above.`,
       landing_help: '? First time — how does this work?',
       jin_greeting: `Hi, I'm <strong>Jin</strong>. I'll help you practice Korean.`,
+      week_label: (n) => `Week ${n}`,
+      empty_week_title: (n) => `Week ${n} coming soon`,
+      empty_week_body: `Jin is curating this week's cards. Check back soon.`,
+      empty_week_back: `← Back to Week 1`,
+      pw_title: (n) => `🔒 Unlock Week ${n}`,
+      pw_body: `Enter the password Jin gave you.`,
+      pw_hint: `You got it at the end of class.`,
+      pw_placeholder: `Password`,
+      pw_submit: `Unlock`,
+      pw_cancel: `Cancel`,
+      pw_error: `Wrong password.`,
 
       // --- mode cards ---
       modecard_tag_tutor: 'In class · teacher taps',
@@ -1781,47 +1791,107 @@
   // ================================================================
   // State
   // ================================================================
-  const STORAGE_KEY = 'jamo-flashcards-v1';
+  const STORAGE_KEY = 'jamo-flashcards-v2';       // v2 = 주차별 네임스페이스
+  const LEGACY_STORAGE_KEY = 'jamo-flashcards-v1'; // v1 = 단일 세트 (마이그레이션용)
+  const WEEK_KEY = 'jamo-flashcards-week-v1';
+  const UNLOCK_KEY = 'jamo-flashcards-unlocked-v1';
+
+  // ---- URL query params (예: ?week=2, ?reset=1) ----
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reset') === '1') {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(WEEK_KEY);
+      localStorage.removeItem(UNLOCK_KEY);
+    } catch {}
+  }
+
+  function loadWeek() {
+    const q = parseInt(urlParams.get('week'), 10);
+    if (q >= 1 && q <= 4) return q;
+    try {
+      const v = parseInt(localStorage.getItem(WEEK_KEY), 10);
+      return (v >= 1 && v <= 4) ? v : 1;
+    } catch { return 1; }
+  }
+  function saveWeek(n) {
+    try { localStorage.setItem(WEEK_KEY, String(n)); } catch {}
+  }
+  function loadUnlockedWeeks() {
+    try {
+      const raw = localStorage.getItem(UNLOCK_KEY);
+      if (!raw) return [1];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [1];
+      return Array.from(new Set([1, ...arr.filter(n => n >= 1 && n <= 4)]));
+    } catch { return [1]; }
+  }
+  function saveUnlockedWeeks(list) {
+    try { localStorage.setItem(UNLOCK_KEY, JSON.stringify(list)); } catch {}
+  }
 
   const state = {
-    lang: loadLang(),             // 'ko' | 'en'
-    set: 'jamo',                  // 'jamo' | 'word'
-    mode: 'diagnostic',           // 'diagnostic' | 'study' | 'reverse'
+    lang: loadLang(),                     // 'ko' | 'en'
+    week: loadWeek(),                     // 1 ~ 4
+    unlockedWeeks: loadUnlockedWeeks(),   // [1, 2, ...]
+    set: 'jamo',                          // 'jamo' | 'word'
+    mode: 'diagnostic',                   // 'diagnostic' | 'study' | 'reverse'
     deck: 'all',
-    queue: [],                    // shuffled deck of card ids (this session/round)
-    originalQueue: [],            // full deck when session started (for round 1 reference)
-    index: -1,                    // -1 = start screen, queue.length = end screen
+    queue: [],                            // shuffled deck of card ids (this session/round)
+    originalQueue: [],                    // full deck when session started (for round 1 reference)
+    index: -1,                            // -1 = start screen, queue.length = end screen
     revealed: false,
     startedAt: null,
     endedAt: null,
-    round: 1,                     // review-drill round counter
-    roundHistory: [],             // [{round, size, wrong, timeMs}, ...] for celebration
-    wrongThisRound: [],           // list of card ids marked wrong (this round)
-    savedWrong: loadWrong(),      // {jamo:[...], word:[...]} from localStorage
+    round: 1,                             // review-drill round counter
+    roundHistory: [],                     // [{round, size, wrong, timeMs}, ...] for celebration
+    wrongThisRound: [],                   // list of card ids marked wrong (this round)
+    savedWrong: loadWrong(),              // { 1: {jamo:[], word:[]}, 2: {...}, ... }
   };
 
   function loadWrong() {
+    // 우선 v2 (주차별) 시도
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return {jamo:[], word:[]};
-      const parsed = JSON.parse(raw);
-      // Backward compat: old flat array → treat as jamo
-      if (Array.isArray(parsed)) return {jamo: parsed, word: []};
-      return {jamo: parsed.jamo || [], word: parsed.word || []};
-    } catch { return {jamo:[], word:[]}; }
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          // 이미 주차별 구조
+          if (parsed[1] || parsed[2] || parsed[3] || parsed[4]) return parsed;
+        }
+      }
+    } catch {}
+    // v1 (단일 세트) 마이그레이션 · Week 1 슬롯으로 이관
+    try {
+      const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacy) {
+        const parsed = JSON.parse(legacy);
+        if (Array.isArray(parsed)) return { 1: { jamo: parsed, word: [] } };
+        if (parsed && (parsed.jamo || parsed.word)) {
+          return { 1: { jamo: parsed.jamo || [], word: parsed.word || [] } };
+        }
+      }
+    } catch {}
+    return {};
   }
   function saveWrong(obj) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); } catch {}
   }
   function currentSavedWrong() {
-    return state.savedWrong[state.set] || [];
+    const w = state.savedWrong[state.week];
+    return (w && w[state.set]) || [];
+  }
+  function setSavedWrong(list) {
+    if (!state.savedWrong[state.week]) state.savedWrong[state.week] = { jamo: [], word: [] };
+    state.savedWrong[state.week][state.set] = list;
+    saveWrong(state.savedWrong);
   }
 
   // ================================================================
   // Deck filtering
   // ================================================================
   function cardsFor(set, deck) {
-    const pool = CARDS_BY_SET[set] || [];
+    const pool = getSetCards(set);
     if (deck === 'all') return pool.map(c => c.id);
     if (deck === 'saved') return currentSavedWrong().filter(id => pool.find(c => c.id === id));
     return pool.filter(c => c.groups.includes(deck)).map(c => c.id);
@@ -1835,7 +1905,11 @@
     return out;
   }
   function cardInfo(id) {
-    return JAMO.find(c => c.id === id) || WORDS.find(c => c.id === id);
+    const data = currentWeekData();
+    if (!data) return null;
+    return (data.jamo || []).find(c => c.id === id) ||
+           (data.words || []).find(c => c.id === id) ||
+           null;
   }
   // legacy alias for any leftover call sites
   const jamoInfo = cardInfo;
@@ -1891,11 +1965,10 @@
   function endSession() {
     state.endedAt = performance.now();
     stopTimer();
-    // Persist weak spots for this set (union of prior + this round's wrong)
+    // Persist weak spots for this week+set (union of prior + this round's wrong)
     const priorForSet = currentSavedWrong();
     const combined = Array.from(new Set([...priorForSet, ...state.wrongThisRound]));
-    state.savedWrong[state.set] = combined;
-    saveWrong(state.savedWrong);
+    setSavedWrong(combined);
     // Record this round in history
     state.roundHistory.push({
       round: state.round,
@@ -1917,12 +1990,11 @@
     if (mark === 'right') {
       // if a card previously in savedWrong is now right (and not wrong this round), remove from saved
       const cur = state.queue[state.index];
-      const savedList = state.savedWrong[state.set] || [];
+      const savedList = [...currentSavedWrong()];
       const idx = savedList.indexOf(cur);
       if (idx > -1 && !state.wrongThisRound.includes(cur)) {
         savedList.splice(idx, 1);
-        state.savedWrong[state.set] = savedList;
-        saveWrong(state.savedWrong);
+        setSavedWrong(savedList);
       }
     }
     state.index += 1;
@@ -1946,8 +2018,7 @@
     render();
   }
   function clearSavedWrong() {
-    state.savedWrong[state.set] = [];
-    saveWrong(state.savedWrong);
+    setSavedWrong([]);
     if (state.deck === 'saved') {
       state.deck = 'all';
     }
@@ -2015,12 +2086,68 @@
     el.disabled = count === 0;
   }
 
+  function renderWeekTabs() {
+    const tabs = [1, 2, 3, 4].map(n => {
+      const unlocked = weekIsUnlocked(n);
+      const active = state.week === n;
+      const hasContent = weekHasContent(n);
+      const classes = ['week-tab'];
+      if (active) classes.push('active');
+      if (!unlocked) classes.push('locked');
+      const lockIcon = unlocked ? '' : '<span class="lock-icon">🔒</span>';
+      const badge = (unlocked && !hasContent) ? ' · Coming' : '';
+      return `<button class="${classes.join(' ')}" data-week-tab="${n}">${t('week_label', n)}${lockIcon}${badge}</button>`;
+    }).join('');
+    return `<div class="week-tabs">${tabs}</div>`;
+  }
+
+  function wireWeekTabs() {
+    document.querySelectorAll('[data-week-tab]').forEach(btn => {
+      const n = parseInt(btn.dataset.weekTab, 10);
+      btn.onclick = () => {
+        if (weekIsUnlocked(n)) {
+          switchToWeek(n);
+        } else {
+          showPasswordModal(n);
+        }
+      };
+    });
+  }
+
+  function switchToWeek(n) {
+    state.week = n;
+    saveWeek(n);
+    state.set = 'jamo';
+    state.deck = 'all';
+    renderStart();
+  }
+
   function renderStart() {
     const isJamo = state.set === 'jamo';
     const cta = t('modecard_cta');
+    const weekHasCards = weekHasContent(state.week);
+
+    // 잠금 해제 됐지만 컨텐츠가 없는 주차 → 빈 주차 화면
+    if (!weekHasCards) {
+      main.innerHTML = `
+        <div class="landing">
+          ${renderWeekTabs()}
+          <div class="empty-week">
+            <div class="icon">📚</div>
+            <h2>${t('empty_week_title', state.week)}</h2>
+            <p>${t('empty_week_body')}</p>
+            <button class="btn" id="back-to-w1">${t('empty_week_back')}</button>
+          </div>
+        </div>
+      `;
+      wireWeekTabs();
+      document.getElementById('back-to-w1').onclick = () => switchToWeek(1);
+      return;
+    }
 
     main.innerHTML = `
       <div class="landing">
+        ${renderWeekTabs()}
         <div class="jin-controls-row">
           <div class="jin-photo-block">
             <div class="speech-bubble">${t('jin_greeting')}</div>
@@ -2066,6 +2193,7 @@
         <button id="show-help" class="text-link">${t('landing_help')}</button>
       </div>
     `;
+    wireWeekTabs();
     // Wire set chips (moved into landing template)
     document.querySelectorAll('#set-chips .set-chip').forEach(btn => {
       btn.onclick = () => {
@@ -2084,6 +2212,68 @@
       };
     });
     document.getElementById('show-help').onclick = showHelp;
+  }
+
+  function showPasswordModal(week) {
+    if (document.getElementById('modal-backdrop')) return;
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <div class="modal-backdrop pw-modal" id="modal-backdrop" role="dialog" aria-modal="true">
+        <div class="modal">
+          <div class="modal-header">
+            <h2>${t('pw_title', week)}</h2>
+            <button class="modal-close" id="modal-close" aria-label="${t('help_close_aria')}">✕</button>
+          </div>
+          <p>${t('pw_body')}</p>
+          <input type="password" id="pw-input" placeholder="${t('pw_placeholder')}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <div class="pw-error" id="pw-error"></div>
+          <div class="pw-actions">
+            <button class="btn ghost" id="pw-cancel">${t('pw_cancel')}</button>
+            <button class="btn" id="pw-submit">${t('pw_submit')}</button>
+          </div>
+          <p class="pw-hint">${t('pw_hint')}</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div.firstElementChild);
+    const backdrop = document.getElementById('modal-backdrop');
+    const input = document.getElementById('pw-input');
+    const errEl = document.getElementById('pw-error');
+    const close = () => backdrop?.remove();
+
+    const attempt = () => {
+      const value = input.value;
+      const ok = typeof window.checkWeekPassword === 'function'
+        ? window.checkWeekPassword(week, value)
+        : false;
+      if (ok) {
+        // Unlock
+        const list = [...state.unlockedWeeks];
+        if (!list.includes(week)) list.push(week);
+        state.unlockedWeeks = list;
+        saveUnlockedWeeks(list);
+        close();
+        switchToWeek(week);
+      } else {
+        // Shake
+        backdrop.classList.add('error');
+        errEl.textContent = t('pw_error');
+        input.value = '';
+        setTimeout(() => { backdrop.classList.remove('error'); }, 450);
+        input.focus();
+      }
+    };
+
+    document.getElementById('modal-close').onclick = close;
+    document.getElementById('pw-cancel').onclick = close;
+    document.getElementById('pw-submit').onclick = attempt;
+    backdrop.addEventListener('click', (e) => {
+      if (e.target.id === 'modal-backdrop') close();
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); attempt(); }
+    });
+    setTimeout(() => input.focus(), 50);
   }
 
   function showHelp() {
@@ -2435,38 +2625,19 @@
     };
   }
 
-  // Deck definitions per set — key + i18n token for label
-  const DECK_OPTIONS = {
-    jamo: [
-      {key:'all',       i18n:'deck_all_jamo'},
-      {key:'consonant', i18n:'deck_consonant'},
-      {key:'vowel',     i18n:'deck_vowel'},
-      {key:'basic',     i18n:'deck_basic'},
-      {key:'hard',      i18n:'deck_hard'},
-      {key:'complex',   i18n:'deck_complex'},
-    ],
-    word: [
-      {key:'all',    i18n:'deck_all_word'},
-      {key:'noun',   i18n:'deck_noun'},
-      {key:'people', i18n:'deck_people'},
-      {key:'food',   i18n:'deck_food'},
-      {key:'verb',   i18n:'deck_verb'},
-      {key:'adj',    i18n:'deck_adj'},
-      {key:'time',   i18n:'deck_time'},
-      {key:'place',  i18n:'deck_place'},
-    ],
-  };
+  // Deck options는 이제 주차별 데이터에서 가져옴 (data/weekN.js 의 deckOptions)
 
   function deckLabelFor(set, deckKey) {
     if (deckKey === 'saved') return t('deck_saved', currentSavedWrong().length);
-    const opt = (DECK_OPTIONS[set] || []).find(o => o.key === deckKey);
+    const opts = getCurrentDeckOptions();
+    const opt = (opts[set] || []).find(o => o.key === deckKey);
     return opt ? t(opt.i18n) : '';
   }
 
   function renderDeckChips() {
     const container = document.getElementById('deck-chips');
     if (!container) return;  // only renders when landing is active
-    const opts = DECK_OPTIONS[state.set];
+    const opts = getCurrentDeckOptions()[state.set] || [];
     const savedCount = currentSavedWrong().length;
     container.innerHTML = opts.map(o =>
       `<button class="chip${o.key === state.deck ? ' active' : ''}" data-deck="${o.key}">${t(o.i18n)}</button>`
