@@ -257,6 +257,52 @@
   @media (max-width: 480px) {
     .vocab-key ul { columns: 1; }
   }
+
+  /* Teacher-only password reference */
+  .pw-box {
+    background: var(--card);
+    border: 1px solid var(--highlight);
+    border-left: 4px solid var(--highlight);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin: 0 0 20px;
+  }
+  .pw-box .label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--highlight);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .pw-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .pw-row:last-of-type { border-bottom: none; }
+  .pw-row .wk { font-weight: 600; font-size: 15px; }
+  .pw-row .wk small { color: var(--muted); font-weight: 400; font-size: 12px; display: block; }
+  .pw-row .code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--bg);
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    letter-spacing: 0.02em;
+  }
+  .pw-box .note {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 12px 0 0;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -268,6 +314,27 @@
 <div class="goal">
   <div class="label">오늘의 목표 · Today's Goal</div>
   <p>학생의 자모 <em class="en">(jamo · Korean letters)</em> 인식 속도 <em class="en">(recognition speed)</em>를 <strong>숫자로 측정</strong>해서 4주 뒤 비교 기준을 만든다. 개념 설명은 최소, 반복 드릴 <em class="en">(repetition drill)</em> 위주.</p>
+</div>
+
+<div class="pw-box">
+  <div class="label">🔑 주차별 잠금 비밀번호 · Week unlock passwords (선생님 전용)</div>
+  <div class="pw-row">
+    <div class="wk">Week 1<small>항상 열려있음 · always open</small></div>
+    <div class="code">—</div>
+  </div>
+  <div class="pw-row">
+    <div class="wk">Week 2<small>받침·복모음 단어</small></div>
+    <div class="code">batchim</div>
+  </div>
+  <div class="pw-row">
+    <div class="wk">Week 3<small>연음·이중받침 (준비 중)</small></div>
+    <div class="code">yeoneum</div>
+  </div>
+  <div class="pw-row">
+    <div class="wk">Week 4<small>실전 콘텐츠 (준비 중)</small></div>
+    <div class="code">graduation</div>
+  </div>
+  <p class="note">수업 마지막 5분에 그 주 비밀번호를 학생에게 알려주세요. 학생이 집에서 그 탭을 열어 연습합니다. 한 번 열면 그 폰에서는 계속 열려있어요. · Tell the student that week's password at the end of class.</p>
 </div>
 
 <div class="vocab-key">
