@@ -64,7 +64,7 @@
   }
 
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
+  html { height: 100%; }
   body {
     margin: 0;
     background: var(--bg);
@@ -75,9 +75,13 @@
     -webkit-font-smoothing: antialiased;
     display: flex;
     flex-direction: column;
+    /* 전 기기 자연 스크롤 — iPad Safari 100vh 클리핑 문제 방지.
+       dvh(동적 뷰포트)로 주소창 접힘까지 반영. 세션 모달은 position:fixed라 영향 없음. */
     min-height: 100vh;
-    overflow: hidden;
+    min-height: 100dvh;
   }
+  /* 카드 세션 중 배경 스크롤 잠금 (모달이 fixed로 화면 덮음) */
+  body.session-open { overflow: hidden; height: 100vh; height: 100dvh; }
   .korean {
     font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Nanum Gothic", system-ui, sans-serif;
   }
@@ -261,12 +265,12 @@
 
   /* ---------- Main ---------- */
   main {
-    flex: 1;
+    flex: 1 0 auto;
     display: flex;
-    align-items: safe center;
-    justify-content: safe center;
+    align-items: flex-start;      /* 상단 정렬 — 넘쳐도 클리핑 없이 스크롤 */
+    justify-content: center;      /* 가로 가운데 */
     padding: 24px;
-    overflow: auto;
+    overflow: visible;            /* 페이지 전체가 스크롤 (내부 스크롤 X) */
     position: relative;
   }
 
@@ -1374,15 +1378,7 @@
     .shortcuts { display: none; }
     .landing-hero h1 { font-size: 24px; }
     .modal { padding: 22px; }
-
-    /* Mobile: whole page scrolls naturally (fixes iOS Safari scroll dead zones
-       and lets the URL bar collapse on scroll). Session modal stays fixed. */
-    html, body { overflow: visible; }
-    body { min-height: 100vh; min-height: 100dvh; }
-    main {
-      overflow: visible;
-      flex: 1 0 auto;
-    }
+    /* 자연 스크롤은 이제 전 기기 기본값 (위 body/main 참조) */
   }
   @media (max-width: 480px) {
     /* on very narrow screens, further trim toolbar-right */
@@ -2124,6 +2120,9 @@
     if (state.index === -1) renderStart();
     else if (state.index >= state.queue.length) renderEnd();
     else renderCard();
+    // 카드 세션(모달) 중에는 뒤 페이지 스크롤 잠금 — iOS 주소창 흔들림 방지
+    const inCardSession = state.index >= 0 && state.index < state.queue.length;
+    document.body.classList.toggle('session-open', inCardSession);
   }
 
   function updateStats() {
