@@ -25,8 +25,8 @@
 <script src="data/config.js"></script>
 <script src="data/week1.js"></script>
 <script src="data/week2.js"></script>
-<!-- 추후 Week 3~4 데이터가 준비되면 여기에 script 태그 추가:
 <script src="data/week3.js"></script>
+<!-- 추후 Week 4 데이터가 준비되면 여기에 script 태그 추가:
 <script src="data/week4.js"></script>
 -->
 
@@ -373,6 +373,27 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
+  }
+  /* [읽는 대로] — Week 3 발음 규칙용 */
+  .card-spoken {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    font-size: 30px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin-bottom: 2px;
+  }
+  /* 🧩 조합 분해 — 복합어·보너스 문장용 */
+  .card-parts {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--rule);
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 500;
   }
 
   /* ---------- Action buttons ---------- */
@@ -2479,8 +2500,10 @@
       revealContent = `<div class="card-face korean" style="font-size: ${koreanFontSize(info.char)}">${info.char}</div>`;
     } else {
       if (isWord) {
-        revealContent = `<div class="card-sound">${info.sound}</div>
-                         <div class="card-name" style="font-size:16px; color:var(--ink); font-family:inherit; letter-spacing:0; text-transform:none; margin-top:4px;">${info.meaning}</div>`;
+        const spokenLine = info.spoken ? `<div class="card-spoken">${info.spoken}</div>` : '';
+        const partsLine = info.parts ? `<div class="card-parts">🧩 ${info.parts}</div>` : '';
+        revealContent = `${spokenLine}<div class="card-sound">${info.sound}</div>
+                         <div class="card-name" style="font-size:16px; color:var(--ink); font-family:inherit; letter-spacing:0; text-transform:none; margin-top:4px;">${info.meaning}</div>${partsLine}`;
       } else {
         revealContent = `<div class="card-sound">${info.sound}</div>
                          <div class="card-name">${info.name}</div>`;
