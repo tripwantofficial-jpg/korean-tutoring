@@ -10,6 +10,7 @@ window.WEEK_PASSWORDS_ENC = {
   2: 'YmF0Y2hpbQ==',        // = "batchim"
   3: 'eWVvbmV1bQ==',        // = "yeoneum"
   4: 'Z3JhZHVhdGlvbg==',    // = "graduation"
+  5: 'Z2lmdA==',            // = "gift"  (🎁 보너스 챕터)
 };
 
 // 검증 함수 · 입력된 문자열과 저장된 인코딩 비교

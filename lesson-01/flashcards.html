@@ -27,6 +27,7 @@
 <script src="data/week2.js"></script>
 <script src="data/week3.js"></script>
 <script src="data/week4.js"></script>
+<script src="data/bonus.js"></script>
 
 <style>
   :root {
@@ -787,11 +788,12 @@
   .session-card.flipping { animation: flip 0.35s ease; }
   .session-card .card-face {
     font-size: min(28vw, 34vh, 220px);
-    line-height: 1;
+    line-height: 1.12;
     font-weight: 400;
     color: var(--ink);
     letter-spacing: -0.02em;
     text-align: center;
+    word-break: keep-all;   /* 한국어 어절 단위로 줄바꿈 (사요가 사/요로 안 쪼개짐) */
   }
   .session-card .card-face.answer {
     font-size: min(14vw, 16vh, 100px);
@@ -941,6 +943,13 @@
   .week-tab.locked { opacity: 0.65; }
   .week-tab.locked .lock-icon { font-size: 11px; }
   .week-tab.locked:hover { opacity: 1; color: var(--ink); }
+  /* 🎁 보너스 탭 — 금색 강조 */
+  .week-tab.bonus-tab { color: #B8860B; font-weight: 600; }
+  .week-tab.bonus-tab.active { background: #C9A227; color: #FFFFFF; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .week-tab.bonus-tab { color: #E0C060; }
+  }
+  :root[data-theme="dark"] .week-tab.bonus-tab { color: #E0C060; }
 
   /* Empty week placeholder (unlocked but no content yet) */
   .empty-week {
@@ -1555,11 +1564,11 @@
       landing_deck_note: (deckLabel, size) => `현재 덱: <strong>${deckLabel}</strong> · <strong>${size}</strong>장 · 위 알약 버튼으로 바꿀 수 있어요.`,
       landing_help: '? 처음이라 어떻게 쓰는지 모르겠어요',
       jin_greeting: '안녕, <strong>Jin</strong>이에요. 너의 한국어 연습을 도와줄게요.',
-      week_label: (n) => `Week ${n}`,
-      empty_week_title: (n) => `Week ${n} 콘텐츠 준비 중`,
-      empty_week_body: 'Jin이 이번 주 카드를 큐레이션 중이에요. 곧 열려요.',
+      week_label: (n) => n === 5 ? '🎁 보너스' : `Week ${n}`,
+      empty_week_title: (n) => n === 5 ? '🎁 보너스 준비 중' : `Week ${n} 콘텐츠 준비 중`,
+      empty_week_body: 'Jin이 카드를 큐레이션 중이에요. 곧 열려요.',
       empty_week_back: '← Week 1로 돌아가기',
-      pw_title: (n) => `🔒 Week ${n} 잠금 해제`,
+      pw_title: (n) => n === 5 ? '🔒 🎁 보너스 잠금 해제' : `🔒 Week ${n} 잠금 해제`,
       pw_body: 'Jin이 알려준 비밀번호를 입력하세요.',
       pw_hint: '수업 마지막에 안내한 단어예요.',
       pw_placeholder: '비밀번호',
@@ -1715,11 +1724,11 @@
       landing_deck_note: (deckLabel, size) => `Current deck: <strong>${deckLabel}</strong> · <strong>${size}</strong> cards · switch with the pill buttons above.`,
       landing_help: '? First time — how does this work?',
       jin_greeting: `Hi, I'm <strong>Jin</strong>. I'll help you practice Korean.`,
-      week_label: (n) => `Week ${n}`,
-      empty_week_title: (n) => `Week ${n} coming soon`,
-      empty_week_body: `Jin is curating this week's cards. Check back soon.`,
+      week_label: (n) => n === 5 ? '🎁 Bonus' : `Week ${n}`,
+      empty_week_title: (n) => n === 5 ? '🎁 Bonus coming soon' : `Week ${n} coming soon`,
+      empty_week_body: `Jin is curating the cards. Check back soon.`,
       empty_week_back: `← Back to Week 1`,
-      pw_title: (n) => `🔒 Unlock Week ${n}`,
+      pw_title: (n) => n === 5 ? '🔒 Unlock 🎁 Bonus' : `🔒 Unlock Week ${n}`,
       pw_body: `Enter the password Jin gave you.`,
       pw_hint: `You got it at the end of class.`,
       pw_placeholder: `Password`,
@@ -1871,12 +1880,14 @@
     } catch {}
   }
 
+  // 챕터 1~4 = Week 1~4, 5 = 🎁 보너스
+  const MAX_CHAPTER = 5;
   function loadWeek() {
     const q = parseInt(urlParams.get('week'), 10);
-    if (q >= 1 && q <= 4) return q;
+    if (q >= 1 && q <= MAX_CHAPTER) return q;
     try {
       const v = parseInt(localStorage.getItem(WEEK_KEY), 10);
-      return (v >= 1 && v <= 4) ? v : 1;
+      return (v >= 1 && v <= MAX_CHAPTER) ? v : 1;
     } catch { return 1; }
   }
   function saveWeek(n) {
@@ -1888,7 +1899,7 @@
       if (!raw) return [1];
       const arr = JSON.parse(raw);
       if (!Array.isArray(arr)) return [1];
-      return Array.from(new Set([1, ...arr.filter(n => n >= 1 && n <= 4)]));
+      return Array.from(new Set([1, ...arr.filter(n => n >= 1 && n <= MAX_CHAPTER)]));
     } catch { return [1]; }
   }
   function saveUnlockedWeeks(list) {
@@ -2166,11 +2177,12 @@
   }
 
   function renderWeekTabs() {
-    const tabs = [1, 2, 3, 4].map(n => {
+    const tabs = [1, 2, 3, 4, 5].map(n => {
       const unlocked = weekIsUnlocked(n);
       const active = state.week === n;
       const hasContent = weekHasContent(n);
       const classes = ['week-tab'];
+      if (n === 5) classes.push('bonus-tab');
       if (active) classes.push('active');
       if (!unlocked) classes.push('locked');
       const lockIcon = unlocked ? '' : '<span class="lock-icon">🔒</span>';
@@ -2461,11 +2473,14 @@
 
   // Font size for Korean word display — scales down as syllable count grows.
   function koreanFontSize(text) {
-    const len = [...text].length;
+    const len = [...text].length;   // 공백 포함 글자 수
     if (len <= 1) return 'clamp(120px, 26vw, 260px)';
     if (len === 2) return 'clamp(90px, 20vw, 200px)';
     if (len === 3) return 'clamp(70px, 15vw, 150px)';
-    return 'clamp(56px, 12vw, 120px)';
+    if (len <= 5)  return 'clamp(52px, 12vw, 110px)';
+    if (len <= 8)  return 'clamp(42px, 8.5vw, 82px)';   // 짧은 문장
+    if (len <= 12) return 'clamp(34px, 6.5vw, 60px)';   // 보통 문장
+    return 'clamp(26px, 5vw, 46px)';                    // 긴 문장
   }
 
   function renderCard() {
